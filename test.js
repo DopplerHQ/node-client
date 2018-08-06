@@ -1,5 +1,5 @@
 const Doppler = require("./index")
-const doppler = new Doppler(REPLACE_WITH_YOUR_API_KEY)
+const doppler = new Doppler("dyihijtt612bt9wrkhdoduyqzaipwncolavh0ain")
 
 // Test Prediction
 doppler.prediction("sentiment", {
