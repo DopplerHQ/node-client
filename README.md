@@ -15,7 +15,7 @@ See the [REST API docs](https://docs.doppler.market/v1/reference).
 
 Install the package with:
 ``` js
-    npm install doppler-client --save
+npm install doppler-client --save
 ```
 
 ## Usage
@@ -38,7 +38,6 @@ Or using ES modules, this looks more like:
 ``` js
 import Doppler from 'doppler-client';
 const doppler = new Doppler('API_KEY');
-//É
 ```
 
 
@@ -47,7 +46,6 @@ Or using TypeScript:
 ``` ts
 import * as Doppler from 'doppler-client';
 const doppler = new Doppler('API_KEY');
-//É
 ```
 
 ### Using Promises
