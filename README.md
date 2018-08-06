@@ -27,9 +27,9 @@ available in your [Doppler Account](https://doppler.market/account). Require it 
 var doppler = new require('doppler-client')('API_KEY');
 
 doppler.prediction("sentiment", {
-	"texts": [
-		"This is an awesome node package!"
-	]
+  "texts": [
+    "This is an awesome node package!"
+  ]
 })
 ```
 
@@ -65,7 +65,7 @@ doppler.prediction("nlp-pos", {
 
 ### Versioning
 
-Doppler apps are versioned and by default will use the latest version. You can set a specific version using this format. App versions increment by whole numbers: 1,2,3....
+Doppler apps are versioned and by default will use the latest version. You can set a specific version using this format. App versions increment by whole numbers: 1, 2, 3....
 
 ```
 APP_NAME@VERSION
