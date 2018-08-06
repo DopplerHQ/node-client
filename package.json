@@ -18,6 +18,7 @@
     "ai",
     "app store"
   ],
+  "runkitExampleFilename": "test.js",
   "author": "Brian Vallelunga <brian@doppler.market>",
   "license": "Apache-2.0",
   "bugs": {
