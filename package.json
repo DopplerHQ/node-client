@@ -1,0 +1,30 @@
+{
+  "name": "doppler",
+  "version": "1.0.0",
+  "description": "The official Doppler Node.js client.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DopplerMarket/node-client.git"
+  },
+  "keywords": [
+    "doppler",
+    "machine learning",
+    "tensorflow",
+    "ml",
+    "ai",
+    "app store"
+  ],
+  "author": "Brian Vallelunga <brian@doppler.market>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/DopplerMarket/node-client/issues"
+  },
+  "homepage": "https://github.com/DopplerMarket/node-client#readme",
+  "dependencies": {
+    "request-promise": "^4.2.2"
+  }
+}
