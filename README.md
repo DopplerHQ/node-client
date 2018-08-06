@@ -24,20 +24,14 @@ The package needs to be configured with your account's secret key which is
 available in your [Doppler Account](https://doppler.market/account). Require it with the key's value:
 
 ``` js
-var doppler = new require('doppler-client')('API_KEY');
+const Doppler = require("doppler-client")
+const doppler = new Doppler('API_KEY');
 
 doppler.prediction("sentiment", {
   "texts": [
     "This is an awesome node package!"
   ]
 })
-```
-
-Or using ES modules, this looks more like:
-
-``` js
-import Doppler from 'doppler-client';
-const doppler = new Doppler('API_KEY');
 ```
 
 
