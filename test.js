@@ -1,11 +1,10 @@
-const Doppler = require("./index")
-const doppler = new Doppler("dyihijtt612bt9wrkhdoduyqzaipwncolavh0ain")
+process.env.DOPPLER_HOST = "http://api.localhost:3030"
 
-// Test Prediction
-doppler.prediction("sentiment", {
-  "texts": [
-    "The book was good.",
-    "At least it isn't a horrible book.",
-    "Today SUX!"
-  ]
-}).then(console.log).catch(console.error)
+const doppler = require("./index")({
+  api_key: "okximez4eaz53cpoikvalfswkrog9qgs4rfbwfp0",
+  environment: "localhost_1"
+})
+
+doppler.startup().then(function() {
+  console.log(doppler.get("abc"))
+})

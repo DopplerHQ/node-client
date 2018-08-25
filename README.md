@@ -9,7 +9,7 @@ applications written in client and server-side JavaScript.
 
 ## Documentation
 
-See the [REST API docs](https://docs.doppler.market/v1/reference).
+See the [REST API docs](https://help.doppler.market).
 
 ## Installation
 
@@ -20,17 +20,17 @@ npm install doppler-client --save
 
 ## Usage
 
-The package needs to be configured with your account's secret key which is
-available in your [Doppler Account](https://doppler.market/account). Require it with the key's value:
+The package needs to be configured with your account's api key which is
+available in your [Doppler Account](https://doppler.market/account) and the environment name. Require it with the key's value:
 
 ``` js
-const Doppler = require("doppler-client")
-const doppler = new Doppler('API_KEY');
+const doppler = require("doppler-client")({
+  api_key: API_KEY,
+  environment: ENVIRONMENT_NAME
+})
 
-doppler.prediction("sentiment", {
-  "texts": [
-    "This is an awesome node package!"
-  ]
+doppler.startup().then(function() {
+  // Rest of Your Application
 })
 ```
 
@@ -39,44 +39,37 @@ Or using TypeScript:
 
 ``` ts
 import * as Doppler from 'doppler-client';
-const doppler = new Doppler('API_KEY');
+const doppler = Doppler("doppler-client")({
+  api_key: API_KEY,
+  environment: ENVIRONMENT_NAME
+})
+
+doppler.startup().then(function() {
+  // Rest of Your Application
+})
 ```
 
-### Using Promises
+### Fetch Environment Keys
 
-Every method returns a chainable promise which can be used instead of a regular callback:
+You can fetch your environment keys from Doppler by calling the `get(name)` method. It is important to
+note that you must call `get()` after `startup()` has completed.
 
 ``` js
-// Create a prediction on the pos tagger app.
-doppler.prediction("nlp-pos", {
-	"texts": "Doppler is an app store for machine learning."
-}).then(function(output) {
-  // Prediction output
-}).catch(function(err) {
-  // Error response
-});
+doppler.get(KEY_NAME)
 ```
 
-### Versioning
-
-Doppler apps are versioned and by default will use the latest version. You can set a specific version using this format. App versions increment by whole numbers: 1, 2, 3....
-
-```
-APP_NAME@VERSION
-```
-
-Lets look at an example:
+Here is an example:
 
 ``` js
-// Create a prediction on the pos tagger app for version 2.
-doppler.prediction("nlp-pos@2", {
-	"texts": "Doppler is an app store for machine learning."
-}).then(function(output) {
-  // Prediction output
-}).catch(function(err) {
-  // Error response
-});
+const config = {
+  
+  segment_key: doppler.get("SEGMENT_API_KEY"),
+  algolia_key: doppler.get("ALGOLIA_API_KEY")
+  
+}
+
 ```
+
 
 ## Development
 
@@ -91,6 +84,5 @@ $ npm test
 
 - [Doppler](https://doppler.market)
 - [API KEY](https://doppler.market/account)
-- [Documentation](https://doc.doppler.market)
 - [FAQs](https://help.doppler.market)
 
