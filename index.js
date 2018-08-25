@@ -30,8 +30,8 @@ class Doppler {
       url: this.host + "/environments/" + this.environment + "/fetch_keys",
     }).then(function(response) {
       _this.remote_keys = response.keys
-    }).catch(function(error) {
-      console.error(error.error.errors[0])
+    }).catch(function(response) {
+      response.error.errors.forEach(console.error)
     })
   }
   
