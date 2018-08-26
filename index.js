@@ -20,19 +20,14 @@ class Doppler {
   startup() {
     const _this = this
     
-    return request({
+    return _this.request({
       method: "POST",
       body: { local_keys: process.env },
       json: true,
-      headers: {
-        "api-key": this.api_key
-      },
-      url: this.host + "/environments/" + this.environment + "/fetch_keys",
+      path: "/environments/" + this.environment + "/fetch_keys",
     }).then(function(response) {
       _this.remote_keys = response.keys
-    }).catch(function(response) {
-      response.error.errors.forEach(console.error)
-    })
+    }).catch(this.error_handler)
   }
   
   get(key_name) {
@@ -44,17 +39,33 @@ class Doppler {
       return this.remote_keys[key_name]
     }
     
-    request({
+    this.request({
       method: "POST",
       body: { key_name: key_name },
+      json: true,
+      path: "/environments/" + this.environment + "/missing_key",
+    }).catch(this.error_handler)
+    
+    return process.env[key_name]
+  }
+  
+  request(data) {
+    return request({
+      method: data.method,
+      body: data.body,
       json: true,
       headers: {
         "api-key": this.api_key
       },
-      url: this.host + "/environments/" + this.environment + "/missing_key",
+      url: this.host + data.path,
     })
-    
-    return process.env[key_name]
+  }
+  
+  error_handler(response) {
+    if(!response.error) return
+    response.error.messages.forEach(function(error) {
+      console.error(error)
+    })
   }
   
 }
