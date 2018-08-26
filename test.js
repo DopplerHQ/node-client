@@ -1,6 +1,6 @@
 const doppler = require("./index")({
   api_key: "okximez4eaz53cpoikvalfswkrog9qgs4rfbwfp0",
-  environment: "localhost_1"
+  environment: "development_test"
 })
 
 doppler.startup().then(function() {

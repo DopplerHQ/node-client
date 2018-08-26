@@ -57,12 +57,13 @@ class Doppler {
       headers: {
         "api-key": this.api_key
       },
+      timeout: 500,
       url: this.host + data.path,
     })
   }
   
   error_handler(response) {
-    if(!response.error) return
+    if(!response.error.messages) return
     response.error.messages.forEach(function(error) {
       console.error(error)
     })
