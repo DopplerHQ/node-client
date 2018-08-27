@@ -24,7 +24,8 @@ The package needs to be configured with your account's api key which is
 available in your [Doppler Account](https://doppler.market/account) and the environment name. Require it with the key's value:
 
 ``` js
-const doppler = require("doppler-client")({
+const Doppler = require("doppler-client")
+const doppler = new Doppler({
   api_key: API_KEY,
   environment: ENVIRONMENT_NAME
 })
@@ -39,7 +40,7 @@ Or using TypeScript:
 
 ``` ts
 import * as Doppler from 'doppler-client';
-const doppler = Doppler("doppler-client")({
+const doppler = new Doppler({
   api_key: API_KEY,
   environment: ENVIRONMENT_NAME
 })
@@ -71,14 +72,38 @@ const config = {
 ```
 
 
-## Development
+If there are differences between the values your local environment sets and the ones on Doppler, the client will
+use the ones provided by Doppler. You can override this behavior by passing in a second argument to
+the `get(key_name, priority)` method that sets the priority to favor your local enviroment.
 
-Run all tests:
+For example:
 
-```bash
-$ npm install
-$ npm test
+``` js
+// Local Enviroment
+process.env.MAGICAL_KEY="123"
+
+// Doppler
+MAGICAL_KEY="456"
+
+
+// Default Behavior
+doppler.get("MAGICAL_KEY") // => "456"
+
+// Override to Local
+doppler.get("MAGICAL_KEY", Doppler.Priority.Local)
 ```
+
+You can also set the priority globally on initialization:
+
+``` js
+const doppler = new Doppler({
+  api_key: API_KEY,
+  environment: ENVIRONMENT_NAME,
+  priority: Doppler.Priority.Local
+})
+
+```
+
 
 ## Extra Information
 

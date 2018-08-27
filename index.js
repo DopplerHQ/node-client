@@ -2,19 +2,20 @@ request = require("request-promise")
 
 class Doppler {
   
-  constructor(api_key, environment) {
-    if(api_key == null || api_key.length == 0) {
+  constructor(data) {
+    if(data.api_key == null || data.api_key.length == 0) {
       throw new Error("Please provide an 'api_key' on initialization.")
     }
     
-    if(environment == null || environment.length == 0) {
+    if(data.environment == null || data.environment.length == 0) {
       throw new Error("Please provide an 'environment' on initialization.")
     }
     
-    this.api_key = api_key
-    this.environment = environment
+    this.api_key = data.api_key
+    this.environment = data.environment
     this.remote_keys = {}
     this.host = process.env.DOPPLER_HOST || "https://api.doppler.market"
+    this.defaultPriority = data.priority || Doppler.Priority.Remote
   }
   
   startup() {
@@ -30,9 +31,9 @@ class Doppler {
     }).catch(this.error_handler)
   }
   
-  get(key_name) {
+  get(key_name, priority = this.defaultPriority) {    
     if(!!this.remote_keys[key_name]) {
-      if(!!process.env[key_name]) {
+      if(priority == Doppler.Priority.Local && !!process.env[key_name]) {
         return process.env[key_name]
       }
       
@@ -71,6 +72,9 @@ class Doppler {
   
 }
 
-module.exports = function(data) {
-  return new Doppler(data.api_key, data.environment)
-}
+Doppler.Priority = Object.freeze({
+  "Local": 1, 
+  "Remote": 2
+})
+
+module.exports = Doppler
