@@ -63,10 +63,8 @@ Here is an example:
 
 ``` js
 const config = {
-  
   segment_key: doppler.get("SEGMENT_API_KEY"),
   algolia_key: doppler.get("ALGOLIA_API_KEY")
-  
 }
 
 ```
@@ -90,7 +88,7 @@ MAGICAL_KEY="456"
 doppler.get("MAGICAL_KEY") // => "456"
 
 // Override to Local
-doppler.get("MAGICAL_KEY", Doppler.Priority.Local)
+doppler.get("MAGICAL_KEY", Doppler.Priority.Local) // => "123"
 ```
 
 You can also set the priority globally on initialization:

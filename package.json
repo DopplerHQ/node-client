@@ -1,6 +1,6 @@
 {
   "name": "doppler-client",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "The official Doppler Node.js client.",
   "main": "index.js",
   "scripts": {
