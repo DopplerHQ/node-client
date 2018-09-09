@@ -18,7 +18,7 @@ class Doppler {
     this.defaultPriority = data.priority || Doppler.Priority.Remote
   }
   
-  startup() {
+  startup(retry_count = 0) {
     const _this = this
     
     return _this.request({
@@ -28,7 +28,19 @@ class Doppler {
       path: "/environments/" + this.environment + "/fetch_keys",
     }).then(function(response) {
       _this.remote_keys = response.keys
-    }).catch(this.error_handler)
+    }).catch(function(response) {
+      if(!response.error.messages) {
+        if(retry_count < 10) {
+          retry_count += 1
+          console.error("DOPPLER: Failed to reach Doppler servers. Retrying for the " + retry_count + " time now...")
+          return _this.startup(retry_count)
+        } else {
+          console.error("DOPPLER: Failed to reach Doppler servers. Stopping retries...")
+        }
+      }
+      
+      _this.error_handler(response)
+    })
   }
   
   get(key_name, priority = this.defaultPriority) {    
@@ -58,7 +70,7 @@ class Doppler {
       headers: {
         "api-key": this.api_key
       },
-      timeout: 500,
+      timeout: 1500,
       url: this.host + data.path,
     })
   }
