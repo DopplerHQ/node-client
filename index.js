@@ -8,11 +8,16 @@ class Doppler {
     }
     
     if(data.environment == null || data.environment.length == 0) {
-      throw new Error("Please provide an 'environment' on initialization.")
+      throw new Error("Please provide a 'environment' on initialization.")
+    }
+    
+    if(data.pipeline == null || typeof data.pipeline != "number") {
+      throw new Error("Please provide a 'pipeline' on initialization.")
     }
     
     this.api_key = data.api_key
     this.environment = data.environment
+    this.pipeline = data.pipeline
     this.remote_keys = {}
     this.host = process.env.DOPPLER_HOST || "https://api.doppler.market"
     this.defaultPriority = data.priority || Doppler.Priority.Remote
@@ -68,7 +73,8 @@ class Doppler {
       body: data.body,
       json: true,
       headers: {
-        "api-key": this.api_key
+        "api-key": this.api_key,
+        "pipeline": this.pipeline
       },
       timeout: 1500,
       url: this.host + data.path,

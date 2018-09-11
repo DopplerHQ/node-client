@@ -27,7 +27,8 @@ available in your [Doppler Account](https://doppler.market/account) and the envi
 const Doppler = require("doppler-client")
 const doppler = new Doppler({
   api_key: API_KEY,
-  environment: ENVIRONMENT_NAME
+  pipeline: PIPELINE_ID,
+  environment: "ENVIRONMENT_NAME"
 })
 
 doppler.startup().then(function() {
@@ -42,7 +43,8 @@ Or using TypeScript:
 import * as Doppler from 'doppler-client';
 const doppler = new Doppler({
   api_key: API_KEY,
-  environment: ENVIRONMENT_NAME
+  pipeline: PIPELINE_ID,
+  environment: "ENVIRONMENT_NAME"
 })
 
 doppler.startup().then(function() {
@@ -96,7 +98,8 @@ You can also set the priority globally on initialization:
 ``` js
 const doppler = new Doppler({
   api_key: API_KEY,
-  environment: ENVIRONMENT_NAME,
+  pipeline: PIPELINE_ID,
+  environment: "ENVIRONMENT_NAME",
   priority: Doppler.Priority.Local
 })
 
