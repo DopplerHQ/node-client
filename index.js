@@ -11,7 +11,7 @@ class Doppler {
       throw new Error("Please provide a 'environment' on initialization.")
     }
     
-    if(data.pipeline == null || typeof data.pipeline != "number") {
+    if(data.pipeline == null) {
       throw new Error("Please provide a 'pipeline' on initialization.")
     }
     
