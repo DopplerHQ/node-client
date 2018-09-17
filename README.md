@@ -5,11 +5,7 @@
 [![Try on RunKit](https://badge.runkitcdn.com/doppler-client.svg)](https://runkit.com/npm/doppler-client)
 
 The Doppler Node library provides convenient access to the Doppler API from
-applications written in client and server-side JavaScript.
-
-## Documentation
-
-See the [REST API docs](https://help.doppler.market).
+applications written for **only** server-side JavaScript.
 
 ## Installation
 
@@ -20,15 +16,14 @@ npm install doppler-client --save
 
 ## Usage
 
-The package needs to be configured with your account's api key which is
-available in your [Doppler Account](https://doppler.market/account) and the environment name. Require it with the key's value:
+The package needs to be configured with your account's api key which is available in your [Doppler Account](https://doppler.market/workplace/api_key), pipeline identifier and the environment name:
 
 ``` js
 const Doppler = require("doppler-client")
 const doppler = new Doppler({
-  api_key: API_KEY,
-  pipeline: PIPELINE_ID,
-  environment: "ENVIRONMENT_NAME"
+  api_key: process.env.API_KEY,
+  pipeline: process.env.PIPELINE_ID,
+  environment: process.env.ENVIRONMENT_NAME
 })
 
 doppler.startup().then(function() {
@@ -42,9 +37,9 @@ Or using TypeScript:
 ``` ts
 import * as Doppler from 'doppler-client';
 const doppler = new Doppler({
-  api_key: API_KEY,
-  pipeline: PIPELINE_ID,
-  environment: "ENVIRONMENT_NAME"
+  api_key: process.env.API_KEY,
+  pipeline: process.env.PIPELINE_ID,
+  environment: process.env.ENVIRONMENT_NAME
 })
 
 doppler.startup().then(function() {
@@ -52,10 +47,18 @@ doppler.startup().then(function() {
 })
 ```
 
+
+## Key Best Practices
+
+So if Doppler stores my environment keys, where should I keep my Doppler API keys?
+
+That is a great question! We recommend storing your `API_KEY`, `PIPELINE_ID`, and `ENVIRONMENT_NAME` 
+in local environment. That means the only keys you should be storing in your local environment are the Doppler keys. All other keys should be be fetched by the Doppler client.
+
+
 ### Fetch Environment Keys
 
-You can fetch your environment keys from Doppler by calling the `get(name)` method. It is important to
-note that you must call `get()` after `startup()` has completed.
+You can fetch your environment keys from Doppler by calling the `get(name)` method. It is important to note that you must call `get()` after `startup()` has completed.
 
 ``` js
 doppler.get(KEY_NAME)
@@ -72,9 +75,7 @@ const config = {
 ```
 
 
-If there are differences between the values your local environment sets and the ones on Doppler, the client will
-use the ones provided by Doppler. You can override this behavior by passing in a second argument to
-the `get(key_name, priority)` method that sets the priority to favor your local enviroment.
+If there are differences between the values your local environment sets and the ones on Doppler, the client will use the ones provided by Doppler. You can override this behavior by passing in a second argument to the `get(key_name, priority)` method that sets the priority to favor your local enviroment.
 
 For example:
 
@@ -97,9 +98,9 @@ You can also set the priority globally on initialization:
 
 ``` js
 const doppler = new Doppler({
-  api_key: API_KEY,
-  pipeline: PIPELINE_ID,
-  environment: "ENVIRONMENT_NAME",
+  api_key: process.env.API_KEY,
+  pipeline: process.env.PIPELINE_ID,
+  environment: process.env.ENVIRONMENT_NAME,
   priority: Doppler.Priority.Local
 })
 
@@ -109,6 +110,5 @@ const doppler = new Doppler({
 ## Extra Information
 
 - [Doppler](https://doppler.market)
-- [API KEY](https://doppler.market/account)
-- [FAQs](https://help.doppler.market)
+- [API KEY](https://doppler.market/workplace/api_key)
 
