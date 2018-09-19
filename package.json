@@ -1,6 +1,6 @@
 {
   "name": "doppler-client",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "The official Doppler Node.js client.",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DopplerMarket/node-client.git"
+    "url": "git+https://github.com/DopplerHQ/node-client.git"
   },
   "keywords": [
     "doppler",
@@ -19,7 +19,7 @@
   "author": "Brian Vallelunga <brian@doppler.market>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/DopplerMarket/node-client/issues"
+    "url": "https://github.com/DopplerHQ/node-client/issues"
   },
   "homepage": "https://doppler.market",
   "dependencies": {
