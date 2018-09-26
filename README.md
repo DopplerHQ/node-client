@@ -132,7 +132,9 @@ const doppler = new Doppler({
 doppler.send_local_keys = false // DEFAULT: true
 
 
-doppler.startup().then(.....
+doppler.startup().then(function() {
+  // Rest of Your Application
+})
 ```
 
 
@@ -152,7 +154,9 @@ doppler.ignore_keys = [
 ]
 
 
-doppler.startup().then(.....
+doppler.startup().then(function() {
+  // Rest of Your Application
+})
 ```
 
 
