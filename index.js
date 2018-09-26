@@ -21,14 +21,29 @@ class Doppler {
     this.remote_keys = {}
     this.host = process.env.DOPPLER_HOST || "https://api.doppler.market"
     this.defaultPriority = data.priority || Doppler.Priority.Remote
+    this.send_local_keys = true
+    this.ignore_keys = []
+    this._set_ignore_keys = null
   }
   
   startup(retry_count = 0) {
     const _this = this
+    const local_keys = {}
+    this._set_ignore_keys = new Set(this.ignore_keys)
+    
+    if(this.send_local_keys) {    
+      for(var key in process.env) {
+        const value = process.env[key]
+        
+        if(!this._set_ignore_keys.has(key)) {
+          local_keys[key] = value
+        }
+      }
+    }
     
     return _this.request({
       method: "POST",
-      body: { local_keys: process.env },
+      body: { local_keys: local_keys },
       json: true,
       path: "/environments/" + this.environment + "/fetch_keys",
     }).then(function(response) {
@@ -51,20 +66,22 @@ class Doppler {
   get(key_name, priority = this.defaultPriority) {    
     if(!!this.remote_keys[key_name]) {
       if(priority == Doppler.Priority.Local && !!process.env[key_name]) {
-        return process.env[key_name]
+        return process.env[key_name] || null
       }
       
       return this.remote_keys[key_name]
     }
+
+    if(!this._set_ignore_keys.has(key_name)) {
+      this.request({
+        method: "POST",
+        body: { key_name: key_name },
+        json: true,
+        path: "/environments/" + this.environment + "/missing_key",
+      }).catch(this.error_handler)
+    }
     
-    this.request({
-      method: "POST",
-      body: { key_name: key_name },
-      json: true,
-      path: "/environments/" + this.environment + "/missing_key",
-    }).catch(this.error_handler)
-    
-    return process.env[key_name]
+    return process.env[key_name] || null
   }
   
   request(data) {

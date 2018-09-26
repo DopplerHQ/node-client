@@ -1,10 +1,15 @@
+process.env.TESTER = "789"
+
 const Doppler = require("./index")
 const doppler = new Doppler({
-  api_key: "okximez4eaz53cpoikvalfswkrog9qgs4rfbwfp0",
-  pipeline: 2,
+  api_key: "RbZ7vIrfbOkZF6hDMKDDdhVoYA0AzBqL8An9OAOL",
+  pipeline: 31,
   environment: "development_primary"
 })
 
+doppler.send_local_keys = true
+
 doppler.startup().then(function() {
   console.log(doppler.get("abc"))
+  console.log(doppler.get("TESTER"))
 })

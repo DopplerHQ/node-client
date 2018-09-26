@@ -107,6 +107,55 @@ const doppler = new Doppler({
 ```
 
 
+# Local Key Privacy
+
+By default the Doppler client will send all your local environment keys on `startup()`. This
+is done for 2 reasons. Collecting your local keys helps us automatically setup your pipelines
+for immediate use. After setup we also use your keys to detect when your keys locally have
+changed from what is on Doppler. We then provide a way for you to adopt or reject those changes
+through our dashboard. This can help help when debugging silent bugs or build failures.
+
+If you would like the Doppler client to not send your keys we provide 2 ways to do it.
+
+### Globally
+To ensure all your local keys are not sent to Doppler, set the `send_local_keys` variable
+to `false` **before** calling `doppler.startup()`.
+
+``` js
+const doppler = new Doppler({
+  api_key: process.env.API_KEY,
+  pipeline: process.env.PIPELINE_ID,
+  environment: process.env.ENVIRONMENT_NAME
+})
+
+// NOTE: Set flag to false
+doppler.send_local_keys = false // DEFAULT: true
+
+
+doppler.startup().then(.....
+```
+
+
+### Individual Key
+You can also ignore specific local keys by adding them to the `ignore_keys` array **before** calling `doppler.startup()`.
+
+``` js
+const doppler = new Doppler({
+  api_key: process.env.API_KEY,
+  pipeline: process.env.PIPELINE_ID,
+  environment: process.env.ENVIRONMENT_NAME
+})
+
+// NOTE: Add keys to ignore
+doppler.ignore_keys = [
+  "SUPER_SECRET_KEY"
+]
+
+
+doppler.startup().then(.....
+```
+
+
 ## Extra Information
 
 - [Doppler](https://doppler.market)
