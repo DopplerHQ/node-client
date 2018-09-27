@@ -107,7 +107,7 @@ const doppler = new Doppler({
 ```
 
 
-# Local Key Privacy
+## Local Key Privacy
 
 By default the Doppler client will send all your local environment keys on `startup()`. This
 is done for 2 reasons. Collecting your local keys helps us automatically setup your pipelines
