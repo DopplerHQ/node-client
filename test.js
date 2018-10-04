@@ -4,7 +4,7 @@ const Doppler = require("./index")
 const doppler = new Doppler({
   api_key: "RbZ7vIrfbOkZF6hDMKDDdhVoYA0AzBqL8An9OAOL",
   pipeline: 31,
-  environment: "development_primary"
+  environment: "development_node"
 })
 
 doppler.send_local_keys = true

@@ -32,6 +32,22 @@ doppler.startup().then(function() {
 ```
 
 
+Or using ES6:
+
+``` js
+import * as Doppler from 'doppler-client';
+const doppler = new Doppler({
+  api_key: process.env.API_KEY,
+  pipeline: process.env.PIPELINE_ID,
+  environment: process.env.ENVIRONMENT_NAME
+})
+
+await doppler.startup()
+
+// Rest of Your Application
+```
+
+
 Or using TypeScript:
 
 ``` ts
@@ -118,44 +134,29 @@ through our dashboard. This can help help when debugging silent bugs or build fa
 If you would like the Doppler client to not send your keys we provide 2 ways to do it.
 
 ### Globally
-To ensure all your local keys are not sent to Doppler, set the `send_local_keys` variable
-to `false` **before** calling `doppler.startup()`.
+To ensure all your local keys are not sent to Doppler, set the `send_local_keys` attribute to `false`.
 
 ``` js
 const doppler = new Doppler({
   api_key: process.env.API_KEY,
   pipeline: process.env.PIPELINE_ID,
-  environment: process.env.ENVIRONMENT_NAME
-})
-
-// NOTE: Set flag to false
-doppler.send_local_keys = false // DEFAULT: true
-
-
-doppler.startup().then(function() {
-  // Rest of Your Application
+  environment: process.env.ENVIRONMENT_NAME,
+  send_local_keys: false
 })
 ```
 
 
 ### Individual Key
-You can also ignore specific local keys by adding them to the `ignore_keys` array **before** calling `doppler.startup()`.
+You can also ignore specific local keys by adding them to the `ignore_keys` array.
 
 ``` js
 const doppler = new Doppler({
   api_key: process.env.API_KEY,
   pipeline: process.env.PIPELINE_ID,
-  environment: process.env.ENVIRONMENT_NAME
-})
-
-// NOTE: Add keys to ignore
-doppler.ignore_keys = [
-  "SUPER_SECRET_KEY"
-]
-
-
-doppler.startup().then(function() {
-  // Rest of Your Application
+  environment: process.env.ENVIRONMENT_NAME,
+  ignore_keys: [
+    "SUPER_SECRET_KEY"
+  ]
 })
 ```
 

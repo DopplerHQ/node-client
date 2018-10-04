@@ -21,8 +21,8 @@ class Doppler {
     this.remote_keys = {}
     this.host = process.env.DOPPLER_HOST || "https://api.doppler.market"
     this.defaultPriority = data.priority || Doppler.Priority.Remote
-    this.send_local_keys = true
-    this.ignore_keys = []
+    this.send_local_keys = data.send_local_keys != null ? data.send_local_keys: true
+    this.ignore_keys = data.ignore_keys || []
     this._set_ignore_keys = null
   }
   
