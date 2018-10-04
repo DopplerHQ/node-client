@@ -7,8 +7,6 @@ const doppler = new Doppler({
   environment: "development_node"
 })
 
-doppler.send_local_keys = true
-
 doppler.startup().then(function() {
   console.log(doppler.get("abc"))
   console.log(doppler.get("TESTER"))

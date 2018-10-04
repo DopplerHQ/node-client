@@ -22,20 +22,18 @@ class Doppler {
     this.host = process.env.DOPPLER_HOST || "https://api.doppler.market"
     this.defaultPriority = data.priority || Doppler.Priority.Remote
     this.send_local_keys = data.send_local_keys != null ? data.send_local_keys: true
-    this.ignore_keys = data.ignore_keys || []
-    this._set_ignore_keys = null
+    this.ignore_keys = new Set(data.ignore_keys || [])
   }
   
   startup(retry_count = 0) {
     const _this = this
     const local_keys = {}
-    this._set_ignore_keys = new Set(this.ignore_keys)
     
     if(this.send_local_keys) {    
       for(var key in process.env) {
         const value = process.env[key]
         
-        if(!this._set_ignore_keys.has(key)) {
+        if(!this.ignore_keys.has(key)) {
           local_keys[key] = value
         }
       }
@@ -72,7 +70,7 @@ class Doppler {
       return this.remote_keys[key_name]
     }
 
-    if(!this._set_ignore_keys.has(key_name)) {
+    if(!this.ignore_keys.has(key_name)) {
       this.request({
         method: "POST",
         body: { key_name: key_name },
