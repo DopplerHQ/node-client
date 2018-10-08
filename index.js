@@ -1,4 +1,5 @@
 request = require("request-promise")
+requestSync = require("sync-request")
 
 class Doppler {
   
@@ -23,9 +24,17 @@ class Doppler {
     this.defaultPriority = data.priority || Doppler.Priority.Remote
     this.send_local_keys = data.send_local_keys != null ? data.send_local_keys: true
     this.ignore_keys = new Set(data.ignore_keys || [])
+    this.max_retries = 10
+    this._startup()
   }
   
-  startup(retry_count = 0) {
+  // DEPRECATED: This method is no longer needed and will be removed
+  //             in a later version.
+  startup() {
+    return Promise.resolve()
+  }
+  
+  _startup(retry_count = 0) {
     const _this = this
     const local_keys = {}
     
@@ -39,26 +48,31 @@ class Doppler {
       }
     }
     
-    return _this.request({
+    const response = _this.requestSync({
       method: "POST",
       body: { local_keys: local_keys },
       json: true,
-      path: "/environments/" + this.environment + "/fetch_keys",
-    }).then(function(response) {
-      _this.remote_keys = response.keys
-    }).catch(function(response) {
-      if(!response.error.messages) {
-        if(retry_count < 10) {
-          retry_count += 1
-          console.error("DOPPLER: Failed to reach Doppler servers. Retrying for the " + retry_count + " time now...")
-          return _this.startup(retry_count)
-        } else {
-          console.error("DOPPLER: Failed to reach Doppler servers. Stopping retries...")
-        }
-      }
-      
-      _this.error_handler(response)
+      path: "/environments/" + this.environment + "/fetch_keys"
     })
+    
+    const success = response[0]
+    const body = response[1]
+    
+    if(success) {
+      return _this.remote_keys = body.keys
+    }
+    
+    if(!body || !body.error.messages) {
+      if(retry_count < _this.max_retries) {
+        retry_count += 1
+        console.error("DOPPLER: Failed to reach Doppler servers. Retrying for the " + retry_count + " time now...")
+        return _this._startup(retry_count)
+      } else {
+        console.error("DOPPLER: Failed to reach Doppler servers. Stopping retries...")
+      }
+    }
+    
+    _this.error_handler(body)
   }
   
   get(key_name, priority = this.defaultPriority) {    
@@ -96,8 +110,29 @@ class Doppler {
     })
   }
   
+  requestSync(data) {
+    try {
+      const res = requestSync("POST", (this.host + data.path), {
+        json: data.body,
+        headers: {
+          "api-key": this.api_key,
+          "pipeline": this.pipeline
+        },
+        timeout: 1500
+      })
+      
+      return [
+        (res.statusCode == 200),
+        JSON.parse(res.body.toString("utf8"))
+      ]
+    
+    } catch (error) {
+      return [ false, null ]
+    }
+  }
+  
   error_handler(response) {
-    if(!response.error.messages) return
+    if(!response || !response.error.messages) return
     response.error.messages.forEach(function(error) {
       console.error(error)
     })

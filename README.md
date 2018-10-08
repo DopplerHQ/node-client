@@ -26,9 +26,7 @@ const doppler = new Doppler({
   environment: process.env.ENVIRONMENT_NAME
 })
 
-doppler.startup().then(function() {
-  // Rest of Your Application
-})
+// Rest of Your Application
 ```
 
 
@@ -41,8 +39,6 @@ const doppler = new Doppler({
   pipeline: process.env.PIPELINE_ID,
   environment: process.env.ENVIRONMENT_NAME
 })
-
-await doppler.startup()
 
 // Rest of Your Application
 ```
@@ -58,9 +54,7 @@ const doppler = new Doppler({
   environment: process.env.ENVIRONMENT_NAME
 })
 
-doppler.startup().then(function() {
-  // Rest of Your Application
-})
+// Rest of Your Application
 ```
 
 
@@ -74,7 +68,7 @@ in local environment. That means the only keys you should be storing in your loc
 
 ### Fetch Environment Keys
 
-You can fetch your environment keys from Doppler by calling the `get(name)` method. It is important to note that you must call `get()` after `startup()` has completed.
+You can fetch your environment keys from Doppler by calling the `get(name)` method.
 
 ``` js
 doppler.get(KEY_NAME)
@@ -125,7 +119,7 @@ const doppler = new Doppler({
 
 ## Local Key Privacy
 
-By default the Doppler client will send all your local environment keys on `startup()`. This
+By default the Doppler client will send all your local environment keys on `init`. This
 is done for 2 reasons. Collecting your local keys helps us automatically setup your pipelines
 for immediate use. After setup we also use your keys to detect when your keys locally have
 changed from what is on Doppler. We then provide a way for you to adopt or reject those changes
