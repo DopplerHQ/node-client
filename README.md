@@ -30,20 +30,6 @@ const doppler = new Doppler({
 ```
 
 
-Or using ES6:
-
-``` js
-import * as Doppler from 'doppler-client';
-const doppler = new Doppler({
-  api_key: process.env.API_KEY,
-  pipeline: process.env.PIPELINE_ID,
-  environment: process.env.ENVIRONMENT_NAME
-})
-
-// Rest of Your Application
-```
-
-
 Or using TypeScript:
 
 ``` ts
