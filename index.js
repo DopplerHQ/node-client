@@ -113,7 +113,7 @@ class Doppler {
   requestSync(data) {
     try {
       const res = requestSync("POST", (this.host + data.path), {
-        body: JSON.stringify(data.body),
+        json: data.body,
         headers: {
           "api-key": this.api_key,
           "pipeline": this.pipeline

@@ -1,4 +1,4 @@
-process.env.TESTER = "789"
+process.env.TESTER = "1110"
 
 const Doppler = require("./index")
 const doppler = new Doppler({
