@@ -68,10 +68,9 @@ class Doppler {
     if(!body || !body.error.messages) {
       if(retry_count < _this.max_retries) {
         retry_count += 1
-        console.error("DOPPLER: Failed to reach Doppler servers. Retrying for the " + retry_count + " time now...")
         return _this._startup(retry_count)
       } else {
-        console.error("DOPPLER: Failed to reach Doppler servers. Stopping retries...")
+        console.error("DOPPLER: Failed to reach Doppler servers after " + retry_count  + " retries...")
       }
     }
     
