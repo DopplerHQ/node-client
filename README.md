@@ -141,6 +141,42 @@ const doppler = new Doppler({
 ```
 
 
+## Overriding Local Keys
+
+The Doppler client by default will not override your local environment keys because it
+can create unknown side effects if the developer didn't take this into account. But 
+if you would like Doppler to override your local environment keys, you can do it for 
+all variables on Doppler or just the ones you specify.
+
+### Globally
+To have all your local keys  overridden by Doppler's remote keys, set the `override_local_keys` attribute to `true`.
+
+``` js
+const doppler = new Doppler({
+  api_key: process.env.API_KEY,
+  pipeline: process.env.PIPELINE_ID,
+  environment: process.env.ENVIRONMENT_NAME,
+  override_local_keys: true
+})
+```
+
+
+### Individual Key
+You can also override specific local keys by setting `override_local_keys` to be an array of keys.
+
+``` js
+const doppler = new Doppler({
+  api_key: process.env.API_KEY,
+  pipeline: process.env.PIPELINE_ID,
+  environment: process.env.ENVIRONMENT_NAME,
+  override_local_keys: [
+    "PORT",
+    "SPECIAL_KEY"
+  ]
+})
+```
+
+
 ## Extra Information
 
 - [Doppler](https://doppler.market)
