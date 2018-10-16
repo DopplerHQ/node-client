@@ -65,7 +65,7 @@ class Doppler {
       return
     }
     
-    if(!body || !body.error.messages) {
+    if(!body || !body.messages) {
       if(retry_count < _this.max_retries) {
         retry_count += 1
         return _this._startup(retry_count)
@@ -78,6 +78,8 @@ class Doppler {
   }
   
   get(key_name, priority = this.defaultPriority) {    
+    const _this = this;
+    
     if(!!this.remote_keys[key_name]) {
       if(priority == Doppler.Priority.Local && !!process.env[key_name]) {
         return process.env[key_name] || null
@@ -92,7 +94,9 @@ class Doppler {
         body: { key_name: key_name },
         json: true,
         path: "/environments/" + this.environment + "/missing_key",
-      }).catch(this.error_handler)
+      }).catch(function(response) {
+        _this.error_handler(response.error)
+      })
     }
     
     return process.env[key_name] || null
@@ -124,6 +128,8 @@ class Doppler {
       },
       timeout: 1500,
       url: this.host + data.path,
+    }).catch(function(response) {
+      _this.error_handler(response.error)
     })
   }
   
@@ -149,8 +155,8 @@ class Doppler {
   }
   
   error_handler(response) {
-    if(!response || !response.error.messages) return
-    response.error.messages.forEach(function(error) {
+    if(!response || !response.messages) return
+    response.messages.forEach(function(error) {
       console.error(error)
     })
   }
