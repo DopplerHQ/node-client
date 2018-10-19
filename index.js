@@ -79,15 +79,12 @@ class Doppler {
         retry_count += 1
         return _this._startup(retry_count)
       } else {
-        if(!!_this.backup_filepath) {
-          console.log(_this.backup_filepath)
-          const response = dotenv.config({ 
-            path: _this.backup_filepath
-          })
+        if(!!_this.backup_filepath && fs.existsSync(_this.backup_filepath)) {
+          const response = dotenv.parse(fs.readFileSync(_this.backup_filepath))
           
-          if(response.parsed != null) {
+          if(response != null) {
             console.log("DOPPLER: Falling back to local backup at " + _this.backup_filepath)
-            _this.remote_keys = response.parsed
+            _this.remote_keys = response
             _this.override_keys()
             return
           }
