@@ -23,8 +23,8 @@ class Doppler {
     this.host = process.env.DOPPLER_HOST || "https://api.doppler.market"
     this.defaultPriority = data.priority || Doppler.Priority.Remote
     this.override_local_keys = data.override_local_keys || false
-    this.send_local_keys = data.send_local_keys != null ? data.send_local_keys: true
-    this.ignore_keys = new Set(data.ignore_keys || [])
+    this._track_keys = new Set(data.track_keys || [])
+    this._ignore_keys = new Set(data.ignore_keys || [])
     this.max_retries = 10
     this._startup()
   }
@@ -35,20 +35,20 @@ class Doppler {
     return Promise.resolve()
   }
   
+  // Private Methods
   _startup(retry_count = 0) {
     const _this = this
-    const local_keys = {}
     
-    if(this.send_local_keys) {    
-      for(var key in process.env) {
-        const value = process.env[key]
-        
-        if(!this.ignore_keys.has(key)) {
-          local_keys[key] = value
-        }
+    const local_keys = {}
+     
+    for(var key in process.env) {
+      const value = process.env[key]
+      
+      if(this._track_keys.has(key)) {
+        local_keys[key] = value
       }
     }
-    
+
     const response = _this.requestSync({
       method: "POST",
       body: { local_keys: local_keys },
@@ -77,29 +77,51 @@ class Doppler {
     _this.error_handler(body)
   }
   
-  get(key_name, priority = this.defaultPriority) {    
-    const _this = this;
+  _track_key(key_name) {
+    return !this._ignore_keys.has(key_name) && !this.ignore_key(key_name)
+  }
+  
+  // Public Methods
+  
+  // Override: Custom ignore method
+  ignore_key(key_name) {
+    return false
+  }
+  
+  get(key_name, priority = this.defaultPriority) { 
+    const _this = this;   
+    var value = null;
     
-    if(!!this.remote_keys[key_name]) {
-      if(priority == Doppler.Priority.Local && !!process.env[key_name]) {
-        return process.env[key_name] || null
-      }
-      
-      return this.remote_keys[key_name]
+    if(priority == Doppler.Priority.Local) {
+      value = process.env[key_name] || _this.remote_keys[key_name] || null;
+    } else {
+      value = _this.remote_keys[key_name] || process.env[key_name] || null;
     }
 
-    if(!this.ignore_keys.has(key_name)) {
-      this.request({
-        method: "POST",
-        body: { key_name: key_name },
-        json: true,
-        path: "/environments/" + this.environment + "/missing_key",
-      }).catch(function(response) {
-        _this.error_handler(response.error)
-      })
+    if(_this._track_key(key_name)) {
+      if(!!value) {
+        if(process.env[key_name] != _this.remote_keys[key_name]) {
+          var local_keys = {}
+          local_keys[key_name] = process.env[key_name] 
+                  
+          _this.request({
+            method: "POST",
+            body: { local_keys: local_keys },
+            json: true,
+            path: "/environments/" + _this.environment + "/track_key",
+          })
+        }
+      } else {
+        _this.request({
+          method: "POST",
+          body: { key_name: key_name },
+          json: true,
+          path: "/environments/" + _this.environment + "/missing_key",
+        })
+      }
     }
     
-    return process.env[key_name] || null
+    return value
   }
   
   override_keys() {
@@ -118,6 +140,8 @@ class Doppler {
   }
   
   request(data) {
+    const _this = this;
+    
     return request({
       method: data.method,
       body: data.body,
