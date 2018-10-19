@@ -102,6 +102,22 @@ const doppler = new Doppler({
 
 ```
 
+## Fallback to Backup
+
+The Doppler client accepts a `backup_filepath` on init. If provided the client will write
+the remote keys to a backup file. If the Doppler client fails to connect to our API
+endpoint (very unlikely), the client will fallback to the keys provided in the backup file.
+
+```
+const doppler = new Doppler({
+  api_key: process.env.API_KEY,
+  pipeline: process.env.PIPELINE_ID,
+  environment: process.env.ENVIRONMENT_NAME,
+  priority: Doppler.Priority.Local,
+  backup_filepath: "./backup.env"
+})
+```
+
 
 ## Local Key Privacy
 

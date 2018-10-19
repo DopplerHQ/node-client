@@ -1,5 +1,8 @@
 const request = require("request-promise")
 const requestSync = require("sync-request")
+const fs = require("fs")
+const path = require("path")
+const dotenv = require('dotenv')
 
 class Doppler {
   
@@ -26,6 +29,11 @@ class Doppler {
     this._track_keys = new Set(data.track_keys || [])
     this._ignore_keys = new Set(data.ignore_keys || [])
     this.max_retries = 10
+    
+    if(data.backup_filepath) {
+      this.backup_filepath = path.resolve(process.cwd(), data.backup_filepath) 
+    }
+    
     this._startup()
   }
   
@@ -62,6 +70,7 @@ class Doppler {
     if(success) {
       _this.remote_keys = body.keys
       _this.override_keys()
+      _this._write_env()
       return
     }
     
@@ -70,6 +79,20 @@ class Doppler {
         retry_count += 1
         return _this._startup(retry_count)
       } else {
+        if(!!_this.backup_filepath) {
+          console.log(_this.backup_filepath)
+          const response = dotenv.config({ 
+            path: _this.backup_filepath
+          })
+          
+          if(response.parsed != null) {
+            console.log("DOPPLER: Falling back to local backup at " + _this.backup_filepath)
+            _this.remote_keys = response.parsed
+            _this.override_keys()
+            return
+          }
+        }
+        
         console.error("DOPPLER: Failed to reach Doppler servers after " + retry_count  + " retries...")
       }
     }
@@ -79,6 +102,41 @@ class Doppler {
   
   _track_key(key_name) {
     return !this._ignore_keys.has(key_name) && !this.ignore_key(key_name)
+  }
+  
+  _write_env() {
+    if(!this.backup_filepath) return;
+    var remote_body = []
+    var local_body = []
+    
+    for(var key in this.remote_keys) {
+      const value = this.remote_keys[key]
+      remote_body.push(key + " = " + value)
+    }
+    
+    for(var key in process.env) {
+      const value = process.env[key]
+      
+      if(this._track_keys.has(key) && !this.remote_keys.hasOwnProperty(key)) {
+        local_body.push(key + " = " + value)
+      }
+    }
+    
+    var body = []
+    
+    if(remote_body.length > 0) {
+      body.push("# ----- Remote Keys -----\n" + remote_body.join("\n"))
+    } 
+    
+    if(local_body.length > 0) {
+      body.push("# ----- Local Keys -----\n" + local_body.join("\n"))
+    } 
+    
+    fs.writeFile(this.backup_filepath, body.join("\n\n"), function(error) {
+      if(error != null) {
+        console.error("Failed to write backup to disk with path " + this.backup_filepath)
+      }  
+    })
   }
   
   // Public Methods
