@@ -7,6 +7,5 @@ const doppler = new Doppler({
   environment: "development_node"
 })
 
-console.log(process.env)
 console.log(doppler.get("abc"))
 console.log(doppler.get("TESTER"))

@@ -1,5 +1,5 @@
-request = require("request-promise")
-requestSync = require("sync-request")
+const request = require("request-promise")
+const requestSync = require("sync-request")
 
 class Doppler {
   
@@ -93,9 +93,9 @@ class Doppler {
     var value = null;
     
     if(priority == Doppler.Priority.Local) {
-      value = process.env[key_name] || _this.remote_keys[key_name] || null;
+      value = process.env.hasOwnProperty(key_name) ? process.env[key_name] : _this.remote_keys[key_name]
     } else {
-      value = _this.remote_keys[key_name] || process.env[key_name] || null;
+      value = _this.remote_keys.hasOwnProperty(key_name) ? _this.remote_keys[key_name] : process.env[key_name]
     }
 
     if(_this._track_key(key_name)) {
