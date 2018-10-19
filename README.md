@@ -108,7 +108,7 @@ The Doppler client accepts a `backup_filepath` on init. If provided the client w
 the remote keys to a backup file. If the Doppler client fails to connect to our API
 endpoint (very unlikely), the client will fallback to the keys provided in the backup file.
 
-```
+``` js
 const doppler = new Doppler({
   api_key: process.env.API_KEY,
   pipeline: process.env.PIPELINE_ID,
