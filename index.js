@@ -26,8 +26,10 @@ class Doppler {
     this.host = process.env.DOPPLER_HOST || "https://api.doppler.market"
     this.defaultPriority = data.priority || Doppler.Priority.Remote
     this.override_local_keys = data.override_local_keys || false
-    this._track_keys = new Set(data.track_keys || [])
+    this._track_keys = data.track_keys || []
     this._ignore_keys = new Set(data.ignore_keys || [])
+    this._missing_keys = []
+    this.timeout = null
     this.max_retries = 10
     
     if(data.backup_filepath) {
@@ -35,6 +37,7 @@ class Doppler {
     }
     
     this._startup()
+    this._reset_tracking()
   }
   
   // DEPRECATED: This method is no longer needed and will be removed
@@ -46,22 +49,11 @@ class Doppler {
   // Private Methods
   _startup(retry_count = 0) {
     const _this = this
-    
-    const local_keys = {}
-     
-    for(var key in process.env) {
-      const value = process.env[key]
-      
-      if(this._track_keys.has(key)) {
-        local_keys[key] = value
-      }
-    }
 
     const response = _this.requestSync({
       method: "POST",
-      body: { local_keys: local_keys },
       json: true,
-      path: "/environments/" + this.environment + "/fetch_keys"
+      path: "/environments/" + _this.environment + "/fetch_keys"
     })
     
     const success = response[0]
@@ -111,10 +103,11 @@ class Doppler {
       remote_body.push(key + " = " + value)
     }
     
-    for(var key in process.env) {
+    for(var i in this._track_keys) {
+      const key = this._track_keys[i]
       const value = process.env[key]
       
-      if(this._track_keys.has(key) && !this.remote_keys.hasOwnProperty(key)) {
+      if(!this.remote_keys.hasOwnProperty(key)) {
         local_body.push(key + " = " + value)
       }
     }
@@ -136,6 +129,40 @@ class Doppler {
     })
   }
   
+  _reset_tracking() {
+    if(this.timeout) {
+      clearTimeout(this.timeout)
+    }
+    
+    this.timeout = setTimeout(this._send_tracked_key.bind(this), 100)
+  }
+  
+  _send_tracked_key() {
+    const _this = this
+    const local_keys = {}
+    
+    for(var i in this._track_keys) {
+      const key = this._track_keys[i]
+      const value = process.env[key]
+      local_keys[key] = value
+    }
+    
+    if(Object.keys(local_keys).length > 0 || this._missing_keys.length > 0) {      
+      this.request({
+        method: "POST",
+        body: { 
+          local_keys: local_keys,
+          missing_keys: this._missing_keys
+        },
+        json: true,
+        path: "/environments/" + this.environment + "/track_keys",
+      }).then(function() {
+        _this._missing_keys = []
+        _this._track_keys = []
+      })
+    }
+  }
+  
   // Public Methods
   
   // Override: Custom ignore method
@@ -145,7 +172,7 @@ class Doppler {
   
   get(key_name, priority = this.defaultPriority) { 
     const _this = this;   
-    var value = null;
+    var value = undefined;
     
     if(priority == Doppler.Priority.Local) {
       value = process.env.hasOwnProperty(key_name) ? process.env[key_name] : _this.remote_keys[key_name]
@@ -154,25 +181,12 @@ class Doppler {
     }
 
     if(_this._track_key(key_name)) {
-      if(!!value) {
-        if(process.env[key_name] != _this.remote_keys[key_name]) {
-          var local_keys = {}
-          local_keys[key_name] = process.env[key_name] 
-                  
-          _this.request({
-            method: "POST",
-            body: { local_keys: local_keys },
-            json: true,
-            path: "/environments/" + _this.environment + "/track_key",
-          })
-        }
-      } else {
-        _this.request({
-          method: "POST",
-          body: { key_name: key_name },
-          json: true,
-          path: "/environments/" + _this.environment + "/missing_key",
-        })
+      if(value == undefined || value == null) {
+        _this._missing_keys.push(key_name)
+        _this._reset_tracking()
+      } else if(process.env[key_name] != _this.remote_keys[key_name]) {
+        _this._track_keys.push(key_name)
+        _this._reset_tracking()
       }
     }
     
