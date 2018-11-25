@@ -147,6 +147,8 @@ class Doppler {
     const local_keys = {}
     
     for(var i in this._track_keys) {
+      if(!this._track_keys.hasOwnProperty(i)) { continue }
+      
       const key = this._track_keys[i]
       const value = process.env[key]
       local_keys[key] = value
