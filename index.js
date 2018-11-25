@@ -7,15 +7,15 @@ const dotenv = require("dotenv")
 class Doppler {
   
   constructor(data) {
-    if(data.api_key == null || data.api_key.length == 0) {
+    if(data.api_key === null || data.api_key.length === 0) {
       throw new Error("Please provide an 'api_key' on initialization.")
     }
     
-    if(data.environment == null || data.environment.length == 0) {
+    if(data.environment === null || data.environment.length === 0) {
       throw new Error("Please provide a 'environment' on initialization.")
     }
     
-    if(data.pipeline == null) {
+    if(data.pipeline === null) {
       throw new Error("Please provide a 'pipeline' on initialization.")
     }
     
@@ -74,7 +74,7 @@ class Doppler {
         if(!!_this.backup_filepath && fs.existsSync(_this.backup_filepath)) {
           const response = dotenv.parse(fs.readFileSync(_this.backup_filepath))
           
-          if(response != null) {
+          if(response !== null) {
             console.log("DOPPLER: Falling back to local backup at " + _this.backup_filepath)
             _this.remote_keys = response
             _this.override_keys()
@@ -94,16 +94,21 @@ class Doppler {
   }
   
   _write_env() {
-    if(!this.backup_filepath) return;
+    if(!this.backup_filepath) { return }
+    
     var remote_body = []
     var local_body = []
     
     for(var key in this.remote_keys) {
+      if(!this.remote_keys.hasOwnProperty(key)) { continue }
+      
       const value = this.remote_keys[key]
       remote_body.push(key + " = " + value)
     }
     
     for(var i in this._track_keys) {
+      if(!this._track_keys.hasOwnProperty(i)) { continue }
+      
       const key = this._track_keys[i]
       const value = process.env[key]
       
@@ -123,7 +128,7 @@ class Doppler {
     } 
     
     fs.writeFile(this.backup_filepath, body.join("\n\n"), function(error) {
-      if(error != null) {
+      if(error !== null) {
         console.error("Failed to write backup to disk with path " + this.backup_filepath)
       }  
     })
@@ -151,7 +156,7 @@ class Doppler {
       this.request({
         method: "POST",
         body: { 
-          local_keys: local_keys,
+          local_keys,
           missing_keys: this._missing_keys
         },
         json: true,
@@ -174,17 +179,17 @@ class Doppler {
     const _this = this;   
     var value = undefined;
     
-    if(priority == Doppler.Priority.Local) {
+    if(priority === Doppler.Priority.Local) {
       value = process.env.hasOwnProperty(key_name) ? process.env[key_name] : _this.remote_keys[key_name]
     } else {
       value = _this.remote_keys.hasOwnProperty(key_name) ? _this.remote_keys[key_name] : process.env[key_name]
     }
 
     if(_this._track_key(key_name)) {
-      if(value == undefined || value == null) {
+      if(value === undefined || value === null) {
         _this._missing_keys.push(key_name)
         _this._reset_tracking()
-      } else if(process.env[key_name] != _this.remote_keys[key_name]) {
+      } else if(process.env[key_name] !== _this.remote_keys[key_name]) {
         _this._track_keys.push(key_name)
         _this._reset_tracking()
       }
@@ -194,7 +199,7 @@ class Doppler {
   }
   
   override_keys() {
-    if(this.override_local_keys === false) return
+    if(this.override_local_keys === false) { return }
     
     var override_keys = this.override_local_keys
     
@@ -203,6 +208,8 @@ class Doppler {
     }
     
     for(var i in override_keys) {
+      if(!override_keys.hasOwnProperty(i)) { continue }
+      
       const key_name = override_keys[i]
       process.env[key_name] = this.remote_keys[key_name]
     }
@@ -248,7 +255,8 @@ class Doppler {
   }
   
   error_handler(response) {
-    if(!response || !response.messages) return
+    if(!response || !response.messages) { return }
+    
     response.messages.forEach(function(error) {
       console.error(error)
     })
