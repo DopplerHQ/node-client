@@ -2,6 +2,7 @@
 
 [![Version](https://img.shields.io/npm/v/doppler-client.svg)](https://www.npmjs.org/package/doppler-client)
 [![Downloads](https://img.shields.io/npm/dm/doppler-client.svg)](https://www.npmjs.com/package/doppler-client)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ee88ca15a8fb48068c5643b037ea978b)](https://www.codacy.com/app/vallelungabrian/node-client?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DopplerHQ/node-client&amp;utm_campaign=Badge_Grade)
 [![Try on RunKit](https://badge.runkitcdn.com/doppler-client.svg)](https://runkit.com/npm/doppler-client)
 
 The Doppler Node library provides convenient access to the Doppler API from
