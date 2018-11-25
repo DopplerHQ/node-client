@@ -2,7 +2,7 @@ const request = require("request-promise")
 const requestSync = require("sync-request")
 const fs = require("fs")
 const path = require("path")
-const dotenv = require('dotenv')
+const dotenv = require("dotenv")
 
 class Doppler {
   
@@ -238,7 +238,7 @@ class Doppler {
       })
       
       return [
-        (res.statusCode == 200),
+        (res.statusCode === 200),
         JSON.parse(res.body.toString("utf8"))
       ]
     

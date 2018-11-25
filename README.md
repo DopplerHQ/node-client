@@ -10,6 +10,7 @@ applications written for **only** server-side JavaScript.
 ## Installation
 
 Install the package with:
+
 ``` js
 npm install doppler-client --save
 ```
@@ -29,7 +30,6 @@ const doppler = new Doppler({
 // Rest of Your Application
 ```
 
-
 Or using TypeScript:
 
 ``` ts
@@ -42,7 +42,6 @@ const doppler = new Doppler({
 
 // Rest of Your Application
 ```
-
 
 ## Key Best Practices
 
@@ -118,7 +117,6 @@ const doppler = new Doppler({
 })
 ```
 
-
 ## Local Key Privacy
 
 By default the Doppler client will only track the local environment keys that are used during `doppler.get()`.
@@ -126,7 +124,6 @@ Collecting only those local keys helps us automatically setup your pipelines
 for immediate use. After setup we also use your keys to detect when your keys locally have
 changed from what is on Doppler. We then provide a way for you to adopt or reject those changes
 through our dashboard. This can help help when debugging silent bugs or build failures.
-
 
 ### Track Additional Keys
 The Doppler client can also track additional keys by providing an array of keys to the `track_keys` field.
@@ -142,7 +139,6 @@ const doppler = new Doppler({
   ]
 })
 ```
-
 
 ### Ignoring Specific Keys
 Inversely, you can also ignore specific local keys by adding them to the `ignore_keys` array.
@@ -187,7 +183,6 @@ const doppler = new Doppler({
 })
 ```
 
-
 ### Individual Key
 You can also override specific local keys by setting `override_local_keys` to be an array of keys.
 
@@ -202,7 +197,6 @@ const doppler = new Doppler({
   ]
 })
 ```
-
 
 ## Extra Information
 
