@@ -66,7 +66,6 @@ const config = {
   segment_key: doppler.get("SEGMENT_API_KEY"),
   algolia_key: doppler.get("ALGOLIA_API_KEY")
 }
-
 ```
 
 If there are differences between the values your local environment sets and the ones on Doppler, the client will use the ones provided by Doppler. You can override this behavior by passing in a second argument to the `get(key_name, priority)` method that sets the priority to favor your local environment.
@@ -97,7 +96,6 @@ const doppler = new Doppler({
   environment: process.env.ENVIRONMENT_NAME,
   priority: Doppler.Priority.Local
 })
-
 ```
 
 ## Fallback to Backup
