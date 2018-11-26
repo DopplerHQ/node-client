@@ -3,6 +3,8 @@ const requestSync = require("sync-request")
 const fs = require("fs")
 const path = require("path")
 const dotenv = require("dotenv")
+const config = require("./package")
+
 
 class Doppler {
   
@@ -226,7 +228,9 @@ class Doppler {
       json: true,
       headers: {
         "api-key": this.api_key,
-        "pipeline": this.pipeline
+        "pipeline": this.pipeline,
+        "client-version": config.version,
+        "client-language": "node.js"
       },
       timeout: 1500,
       url: this.host + data.path,
@@ -241,7 +245,9 @@ class Doppler {
         json: data.body,
         headers: {
           "api-key": this.api_key,
-          "pipeline": this.pipeline
+          "pipeline": this.pipeline,
+          "client-version": config.version,
+          "client-language": "node.js"
         },
         timeout: 1500
       })
