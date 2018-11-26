@@ -21,9 +21,7 @@ class Doppler {
       throw new Error("Please provide a 'pipeline' on initialization.")
     }
     
-    this.api_key = data.api_key
     this.environment = data.environment
-    this.pipeline = data.pipeline
     this.remote_keys = {}
     this.host = process.env.DOPPLER_HOST || "https://api.doppler.market"
     this.defaultPriority = data.priority || Doppler.Priority.Remote
@@ -33,8 +31,12 @@ class Doppler {
     this._missing_keys = []
     this.timeout = null
     this.max_retries = 10
-    this.client_version = data.client_version || config.version
-    this.client_sdk = data.client_sdk || "node.js"
+    this.request_headers = {
+      "api-key": data.api_key,
+      "pipeline": data.pipeline,
+      "client-version": data.client_version || config.version,
+      "client-sdk": data.client_sdk || "node.js"
+    }
     
     if(data.backup_filepath) {
       this.backup_filepath = path.resolve(process.cwd(), data.backup_filepath) 
@@ -227,12 +229,7 @@ class Doppler {
       method: data.method,
       body: data.body,
       json: true,
-      headers: {
-        "api-key": this.api_key,
-        "pipeline": this.pipeline,
-        "client-version": this.client_version,
-        "client-sdk": this.client_sdk
-      },
+      headers: this.request_headers,
       timeout: 1500,
       url: this.host + data.path,
     }).catch(function(response) {
@@ -244,12 +241,7 @@ class Doppler {
     try {
       const res = requestSync("POST", (this.host + data.path), {
         json: data.body,
-        headers: {
-          "api-key": this.api_key,
-          "pipeline": this.pipeline,
-          "client-version": this.client_version,
-          "client-sdk": this.client_sdk
-        },
+        headers: this.request_headers,
         timeout: 1500
       })
       
