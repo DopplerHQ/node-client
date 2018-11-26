@@ -33,6 +33,8 @@ class Doppler {
     this._missing_keys = []
     this.timeout = null
     this.max_retries = 10
+    this.client_version = data.client_version || config.version
+    this.client_sdk = data.client_sdk || "node.js"
     
     if(data.backup_filepath) {
       this.backup_filepath = path.resolve(process.cwd(), data.backup_filepath) 
@@ -163,7 +165,6 @@ class Doppler {
           local_keys,
           missing_keys: this._missing_keys
         },
-        json: true,
         path: "/environments/" + this.environment + "/track_keys",
       }).then(function() {
         _this._missing_keys = []
@@ -229,8 +230,8 @@ class Doppler {
       headers: {
         "api-key": this.api_key,
         "pipeline": this.pipeline,
-        "client-version": config.version,
-        "client-language": "node.js"
+        "client-version": this.client_version,
+        "client-sdk": this.client_sdk
       },
       timeout: 1500,
       url: this.host + data.path,
@@ -246,8 +247,8 @@ class Doppler {
         headers: {
           "api-key": this.api_key,
           "pipeline": this.pipeline,
-          "client-version": config.version,
-          "client-language": "node.js"
+          "client-version": this.client_version,
+          "client-sdk": this.client_sdk
         },
         timeout: 1500
       })
