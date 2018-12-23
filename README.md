@@ -18,7 +18,7 @@ npm install doppler-client --save
 
 ## Usage
 
-The package needs to be configured with your account's api key which is available in your [Doppler account](https://doppler.market/workplace/api_key), pipeline identifier and the environment name:
+The package needs to be configured with your account's api key which is available in your [Doppler account](https://doppler.com/workplace/api_key), pipeline identifier and the environment name:
 
 ``` js
 const Doppler = require("doppler-client")
@@ -197,5 +197,5 @@ const doppler = new Doppler({
 
 ## Extra Information
 
-- [Doppler](https://doppler.market)
-- [API KEY](https://doppler.market/workplace/api_key)
+- [Doppler](https://doppler.com)
+- [API KEY](https://doppler.com/workplace/api_key)
