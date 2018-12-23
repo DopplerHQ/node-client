@@ -23,7 +23,7 @@ class Doppler {
     
     this.environment = data.environment
     this.remote_keys = {}
-    this.host = process.env.DOPPLER_HOST || "https://api.doppler.market"
+    this.host = process.env.DOPPLER_HOST || "https://api.doppler.com"
     this.defaultPriority = data.priority || Doppler.Priority.Remote
     this.override_local_keys = data.override_local_keys || false
     this._track_keys = data.track_keys || []
