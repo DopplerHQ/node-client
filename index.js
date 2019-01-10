@@ -114,6 +114,7 @@ class Doppler {
     
     for(var i in this._track_keys) {
       if(!this._track_keys.hasOwnProperty(i)) { continue }
+      if(!process.env.hasOwnProperty(i)) { continue }
       
       const key = this._track_keys[i]
       const value = process.env[key]
@@ -154,6 +155,7 @@ class Doppler {
     
     for(var i in this._track_keys) {
       if(!this._track_keys.hasOwnProperty(i)) { continue }
+      if(!process.env.hasOwnProperty(i)) { continue }
       
       const key = this._track_keys[i]
       const value = process.env[key]
