@@ -33,7 +33,6 @@ DOPPLER_ENVIRONMENT = <Environment Name>
 ### One Line Install
 This installation method will expect the `DOPPLER_API_KEY`, `DOPPLER_PIPELINE`, `DOPPLER_ENVIRONMENT` as environment variables.
 
-
 ``` js
 require("doppler-client")()
 
@@ -45,7 +44,6 @@ const example_variable = process.env.EXAMPLE_VARIABLE
 
 ### Install with Arguments
 This installation method will expect the `api_key`, `pipeline`, `environment` as arguments.
-
 
 ``` js 
 require("doppler-client")({
