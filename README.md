@@ -65,7 +65,7 @@ const example_variable = process.env.EXAMPLE_VARIABLE
 So if Doppler stores my environment keys, where should I keep my Doppler API keys?
 
 That is a great question! We recommend storing your `DOPPLER_API_KEY`, `DOPPLER_PIPELINE`, and `DOPPLER_ENVIRONMENT` 
-in local environment. That means the only keys you should be storing in your local environment are the Doppler keys. All other keys should be be fetched by the Doppler client.
+in a `.env` file or with your infra provider. That means the only keys you should be storing in your local environment are the Doppler keys. All other keys should be be fetched by the Doppler client.
 
 
 
