@@ -24,12 +24,7 @@ class Doppler {
     this.environment = data.environment
     this.remote_keys = {}
     this.host = process.env.DOPPLER_HOST || "https://api.doppler.com"
-    this.defaultPriority = data.priority || Doppler.Priority.Remote
-    this.override_local_keys = data.override_local_keys || false
-    this._track_keys = data.track_keys || []
-    this._ignore_keys = new Set(data.ignore_keys || [])
-    this._missing_keys = []
-    this.timeout = null
+    this.ignore_keys = new Set(data.ignore_keys || [])
     this.max_retries = 10
     this.request_headers = {
       "api-key": data.api_key,
@@ -42,21 +37,14 @@ class Doppler {
       this.backup_filepath = path.resolve(process.cwd(), data.backup_filepath) 
     }
     
-    this._startup()
-    this._reset_tracking()
-  }
-  
-  // DEPRECATED: This method is no longer needed and will be removed
-  //             in a later version.
-  startup() {
-    return Promise.resolve()
+    this.startup()
   }
   
   // Private Methods
-  _startup(retry_count = 0) {
+  startup(retry_count = 0) {
     const _this = this
 
-    const response = _this.requestSync({
+    const response = _this.request({
       method: "POST",
       json: true,
       path: "/environments/" + _this.environment + "/fetch_keys"
@@ -68,14 +56,14 @@ class Doppler {
     if(success) {
       _this.remote_keys = body.keys
       _this.override_keys()
-      _this._write_env()
+      _this.write_env()
       return
     }
     
     if(!body || !body.messages) {
       if(retry_count < _this.max_retries) {
         retry_count += 1
-        return _this._startup(retry_count)
+        return _this.startup(retry_count)
       } else {
         if(!!_this.backup_filepath && fs.existsSync(_this.backup_filepath)) {
           const response = dotenv.parse(fs.readFileSync(_this.backup_filepath))
@@ -95,15 +83,10 @@ class Doppler {
     _this.error_handler(body)
   }
   
-  _track_key(key_name) {
-    return !this._ignore_keys.has(key_name) && !this.ignore_key(key_name)
-  }
-  
-  _write_env() {
+  write_env() {
     if(!this.backup_filepath) { return }
     
     var remote_body = []
-    var local_body = []
     
     for(var key in this.remote_keys) {
       if(!this.remote_keys.hasOwnProperty(key)) { continue }
@@ -112,134 +95,34 @@ class Doppler {
       remote_body.push(key + " = " + value)
     }
     
-    for(var i in this._track_keys) {
-      if(!this._track_keys.hasOwnProperty(i)) { continue }
-      if(!process.env.hasOwnProperty(i)) { continue }
-      
-      const key = this._track_keys[i]
-      const value = process.env[key]
-      
-      if(!this.remote_keys.hasOwnProperty(key)) {
-        local_body.push(key + " = " + value)
-      }
-    }
-    
-    var body = []
-    
-    if(remote_body.length > 0) {
-      body.push("# ----- Remote Keys -----\n" + remote_body.join("\n"))
-    } 
-    
-    if(local_body.length > 0) {
-      body.push("# ----- Local Keys -----\n" + local_body.join("\n"))
-    } 
-    
-    fs.writeFile(this.backup_filepath, body.join("\n\n"), function(error) {
+    fs.writeFile(this.backup_filepath, remote_body.join("\n"), function(error) {
       if(error !== null) {
         console.error("Failed to write backup to disk with path " + this.backup_filepath)
       }  
     })
   }
   
-  _reset_tracking() {
-    if(this.timeout) {
-      clearTimeout(this.timeout)
-    }
     
-    this.timeout = setTimeout(this._send_tracked_key.bind(this), 100)
-  }
-  
-  _send_tracked_key() {
-    const _this = this
-    const local_keys = {}
-    
-    for(var i in this._track_keys) {
-      if(!this._track_keys.hasOwnProperty(i)) { continue }
-      if(!process.env.hasOwnProperty(i)) { continue }
-      
-      const key = this._track_keys[i]
-      const value = process.env[key]
-      local_keys[key] = value
-    }
-    
-    if(Object.keys(local_keys).length > 0 || this._missing_keys.length > 0) {      
-      this.request({
-        method: "POST",
-        body: { 
-          local_keys,
-          missing_keys: this._missing_keys
-        },
-        path: "/environments/" + this.environment + "/track_keys",
-      }).then(function() {
-        _this._missing_keys = []
-        _this._track_keys = []
-      })
-    }
-  }
-  
   // Public Methods
   
-  // Override: Custom ignore method
-  ignore_key(key_name) {
-    return false
+  // Override: Custom ignore method  
+  get(key_name) { 
+    return this.remote_keys[key_name]
   }
   
-  get(key_name, priority = this.defaultPriority) { 
-    const _this = this;   
-    var value = undefined;
-    
-    if(priority === Doppler.Priority.Local) {
-      value = process.env.hasOwnProperty(key_name) ? process.env[key_name] : _this.remote_keys[key_name]
-    } else {
-      value = _this.remote_keys.hasOwnProperty(key_name) ? _this.remote_keys[key_name] : process.env[key_name]
-    }
-
-    if(_this._track_key(key_name)) {
-      if(value === undefined || value === null) {
-        _this._missing_keys.push(key_name)
-        _this._reset_tracking()
-      } else if(process.env[key_name] !== _this.remote_keys[key_name]) {
-        _this._track_keys.push(key_name)
-        _this._reset_tracking()
-      }
-    }
-    
-    return value
-  }
-  
-  override_keys() {
-    if(this.override_local_keys === false) { return }
-    
-    var override_keys = this.override_local_keys
-    
-    if(override_keys === true) {
-      override_keys = Object.keys(this.remote_keys)
-    }
+  override_keys() {    
+    var override_keys = Object.keys(this.remote_keys)
     
     for(var i in override_keys) {
       if(!override_keys.hasOwnProperty(i)) { continue }
       
       const key_name = override_keys[i]
+      if(this.ignore_keys.has(key_name)) { continue }
       process.env[key_name] = this.remote_keys[key_name]
     }
   }
   
   request(data) {
-    const _this = this;
-    
-    return request({
-      method: data.method,
-      body: data.body,
-      json: true,
-      headers: this.request_headers,
-      timeout: 1500,
-      url: this.host + data.path,
-    }).catch(function(response) {
-      _this.error_handler(response.error)
-    })
-  }
-  
-  requestSync(data) {
     try {
       const res = requestSync("POST", (this.host + data.path), {
         json: data.body,
@@ -267,9 +150,12 @@ class Doppler {
   
 }
 
-Doppler.Priority = Object.freeze({
-  "Local": 1, 
-  "Remote": 2
-})
-
-module.exports = Doppler
+var sharedInstance = null;
+module.exports = function(data = {}) {
+  data.api_key = data.api_key || process.env.DOPPLER_API_KEY
+  data.pipeline = data.pipeline || process.env.DOPPLER_PIPELINE
+  data.environment = data.environment || process.env.DOPPLER_ENVIRONMENT
+  
+  if(sharedInstance != null) { return sharedInstance }
+  return sharedInstance = new Doppler(data)
+}

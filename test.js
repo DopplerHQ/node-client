@@ -1,11 +1,8 @@
-process.env.TESTER = "1110"
+process.env.DOPPLER_API_KEY = "TicnD2E2808LTXv3r6l5r5Ssvtg1qNbZ8fsjq9LB"
+process.env.DOPPLER_PIPELINE = "31"
+process.env.DOPPLER_ENVIRONMENT = "development_node"
 
-const Doppler = require("./index")
-const doppler = new Doppler({
-  api_key: "TicnD2E2808LTXv3r6l5r5Ssvtg1qNbZ8fsjq9LB",
-  pipeline: 31,
-  environment: "development_node"
-})
+require("./index")()
 
-console.log(doppler.get("abc"))
+console.log(process.env.TESTER)
 console.log(doppler.get("TESTER"))
