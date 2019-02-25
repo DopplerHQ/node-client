@@ -45,7 +45,7 @@ const example_variable = process.env.EXAMPLE_VARIABLE
 ### Install with Arguments
 This installation method will expect the `api_key`, `pipeline`, `environment` as arguments.
 
-``` 
+``` js
 require("doppler-client")({
   api_key: process.env.DOPPLER_API_KEY,
   pipeline: process.env.DOPPLER_API_KEY,
