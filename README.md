@@ -12,7 +12,7 @@ applications written for **only** server-side JavaScript.
 
 Install the package with:
 
-``` js
+``` bash
 npm install doppler-client --save
 ```
 
