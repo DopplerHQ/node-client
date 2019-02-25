@@ -29,7 +29,6 @@ DOPPLER_PIPELINE = <Pipeline ID>
 DOPPLER_ENVIRONMENT = <Environment Name>
 ```
 
-
 ### One Line Install
 This installation method will expect the `DOPPLER_API_KEY`, `DOPPLER_PIPELINE`, `DOPPLER_ENVIRONMENT` as environment variables.
 
@@ -40,7 +39,6 @@ require("doppler-client")()
 // Rest of Your Application
 const example_variable = process.env.EXAMPLE_VARIABLE
 ```
-
 
 ### Install with Arguments
 This installation method will expect the `api_key`, `pipeline`, `environment` as arguments.
@@ -57,14 +55,12 @@ require("doppler-client")({
 const example_variable = process.env.EXAMPLE_VARIABLE
 ```
 
-
 ## Key Best Practices
 
 So if Doppler stores my environment variables, where should I keep my Doppler API keys?
 
 That is a great question! We recommend storing your `DOPPLER_API_KEY`, `DOPPLER_PIPELINE`, and `DOPPLER_ENVIRONMENT` 
 in a `.env` file or with your infra provider. That means the only variables you should be storing in your local environment are the Doppler keys. All other variables should be be fetched by the Doppler client.
-
 
 
 ## Ignoring Specific Variables
@@ -76,8 +72,6 @@ require("doppler-client")({
   ignore_variables: ["PORT"]
 })
 ```
-
-
 
 ## Fallback to Backup
 
@@ -91,8 +85,7 @@ require("doppler-client")({
 })
 ```
 
-
 ## Extra Information
 
-- [Doppler](https://doppler.com)
-- [API KEY](https://doppler.com/workplace/api_key)
+  - [Doppler](https://doppler.com)
+  - [API KEY](https://doppler.com/workplace/api_key)
