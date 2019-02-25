@@ -62,17 +62,29 @@ const example_variable = process.env.EXAMPLE_VARIABLE
 
 ## Key Best Practices
 
-So if Doppler stores my environment keys, where should I keep my Doppler API keys?
+So if Doppler stores my environment variables, where should I keep my Doppler API keys?
 
 That is a great question! We recommend storing your `DOPPLER_API_KEY`, `DOPPLER_PIPELINE`, and `DOPPLER_ENVIRONMENT` 
-in a `.env` file or with your infra provider. That means the only keys you should be storing in your local environment are the Doppler keys. All other keys should be be fetched by the Doppler client.
+in a `.env` file or with your infra provider. That means the only variables you should be storing in your local environment are the Doppler keys. All other variables should be be fetched by the Doppler client.
+
+
+
+## Ignoring Specific Variables
+
+In the case you would want to ignore specific variables from Doppler, say a port set by Heroku, you can add it the `ignore_variables` field.
+
+``` js
+require("doppler-client")({
+  ignore_variables: ["PORT"]
+})
+```
 
 
 
 ## Fallback to Backup
 
 The Doppler client accepts a `backup_filepath` on init. If provided the client will write
-the remote keys to a backup file. If the Doppler client fails to connect to our API
+the Doppler variables to a backup file. If the Doppler client fails to connect to our API
 endpoint (very unlikely), the client will fallback to the keys provided in the backup file.
 
 ``` js

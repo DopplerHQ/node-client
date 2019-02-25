@@ -24,7 +24,7 @@ class Doppler {
     this.environment = data.environment
     this.remote_keys = {}
     this.host = process.env.DOPPLER_HOST || "https://api.doppler.com"
-    this.ignore_keys = new Set(data.ignore_keys || [])
+    this.ignore_variables = new Set(data.ignore_variables || [])
     this.max_retries = 10
     this.request_headers = {
       "api-key": data.api_key,
@@ -117,7 +117,7 @@ class Doppler {
       if(!override_keys.hasOwnProperty(i)) { continue }
       
       const key_name = override_keys[i]
-      if(this.ignore_keys.has(key_name)) { continue }
+      if(this.ignore_variables.has(key_name)) { continue }
       process.env[key_name] = this.remote_keys[key_name]
     }
   }
