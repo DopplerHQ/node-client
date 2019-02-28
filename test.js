@@ -5,4 +5,3 @@ process.env.DOPPLER_ENVIRONMENT = "development_node"
 require("./index")()
 
 console.log(process.env.TESTER)
-console.log(doppler.get("TESTER"))

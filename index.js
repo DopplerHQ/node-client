@@ -152,9 +152,9 @@ class Doppler {
 
 var sharedInstance = null;
 module.exports = function(data = {}) {
-  data.api_key = data.api_key || process.env.DOPPLER_API_KEY
-  data.pipeline = data.pipeline || process.env.DOPPLER_PIPELINE
-  data.environment = data.environment || process.env.DOPPLER_ENVIRONMENT
+  data.api_key = data.api_key || process.env.DOPPLER_API_KEY || null
+  data.pipeline = data.pipeline || process.env.DOPPLER_PIPELINE || null
+  data.environment = data.environment || process.env.DOPPLER_ENVIRONMENT || null
   
   if(sharedInstance != null) { return sharedInstance }
   return sharedInstance = new Doppler(data)
