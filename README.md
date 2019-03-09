@@ -47,7 +47,7 @@ This installation method will expect the `api_key`, `pipeline`, `environment` as
 ``` js
 require("doppler-client")({
   api_key: process.env.DOPPLER_API_KEY,
-  pipeline: process.env.DOPPLER_API_KEY,
+  pipeline: process.env.DOPPLER_PIPELINE,
   environment: process.env.DOPPLER_ENVIRONMENT
 })
 
