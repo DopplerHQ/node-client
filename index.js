@@ -1,4 +1,3 @@
-const request = require("request-promise")
 const requestSync = require("sync-request")
 const fs = require("fs")
 const path = require("path")
@@ -21,14 +20,14 @@ class Doppler {
       throw new Error("Please provide a 'pipeline' on initialization.")
     }
     
+    this.pipeline = data.pipeline
     this.environment = data.environment
     this.remote_keys = {}
-    this.host = process.env.DOPPLER_HOST || "https://api.doppler.com"
+    this.host = process.env.DOPPLER_HOST || "https://deploy.doppler.com"
     this.ignore_variables = new Set(data.ignore_variables || [])
     this.max_retries = 10
     this.request_headers = {
       "api-key": data.api_key,
-      "pipeline": data.pipeline,
       "client-version": data.client_version || config.version,
       "client-sdk": data.client_sdk || "node.js"
     }
@@ -45,16 +44,19 @@ class Doppler {
     const _this = this
 
     const response = _this.request({
-      method: "POST",
-      json: true,
-      path: "/environments/" + _this.environment + "/fetch_keys"
+      method: "GET",
+      query: {
+        environment: _this.environment,
+        pipeline: _this.pipeline
+      },
+      path: "/v1/variables"
     })
     
     const success = response[0]
     const body = response[1]
     
     if(success) {
-      _this.remote_keys = body.keys
+      _this.remote_keys = body.variables
       _this.override_keys()
       _this.write_env()
       return
@@ -124,8 +126,9 @@ class Doppler {
   
   request(data) {
     try {
-      const res = requestSync("POST", (this.host + data.path), {
+      const res = requestSync(data.method, (this.host + data.path), {
         json: data.body,
+        qs: data.query,
         headers: this.request_headers,
         timeout: 1500
       })
