@@ -1,5 +1,6 @@
 # Doppler Node.js Library
 
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/DopplerHQ/node-client)
 [![Version](https://img.shields.io/npm/v/doppler-client.svg)](https://www.npmjs.org/package/doppler-client)
 [![Downloads](https://img.shields.io/npm/dm/doppler-client.svg)](https://www.npmjs.com/package/doppler-client)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/ee88ca15a8fb48068c5643b037ea978b)](https://www.codacy.com/app/Doppler/node-client?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=DopplerHQ/node-client&amp;utm_campaign=Badge_Grade)
@@ -46,7 +47,7 @@ This installation method will expect the `api_key`, `pipeline`, `environment` as
 ``` js
 require("doppler-client")({
   api_key: process.env.DOPPLER_API_KEY,
-  pipeline: process.env.DOPPLER_API_KEY,
+  pipeline: process.env.DOPPLER_PIPELINE,
   environment: process.env.DOPPLER_ENVIRONMENT
 })
 
