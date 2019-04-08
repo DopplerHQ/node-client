@@ -157,7 +157,7 @@ var sharedInstance = null;
 module.exports = function(data = {}) {
   if(sharedInstance != null) { return sharedInstance }
   
-  const env_path = process.cwd() + "/.env"
+  const env_path = data.env_filepath || ".env"
   const env = fs.existsSync(env_path) ? dotenv.parse(fs.readFileSync(env_path)) : {}
 
   data.api_key = data.api_key || process.env.DOPPLER_API_KEY || env.DOPPLER_API_KEY || null

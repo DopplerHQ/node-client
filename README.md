@@ -39,11 +39,24 @@ Doppler will look for these variables in 3 places with the following priority:
 3. Read from `.env` file
 
 
-### One Line Install
+### Install with Environment Variables
 This installation method will expect the `DOPPLER_API_KEY`, `DOPPLER_PIPELINE`, `DOPPLER_ENVIRONMENT` as environment variables.
 
 ``` js
 require("doppler-client")()
+
+
+// Rest of Your Application
+const example_variable = process.env.EXAMPLE_VARIABLE
+```
+
+### Install with Environment Variables
+This installation method will expect the `DOPPLER_API_KEY`, `DOPPLER_PIPELINE`, `DOPPLER_ENVIRONMENT` in a `.env` file.
+
+``` js
+require("doppler-client")({
+  env_filepath: ".env"   // Defaults to ".env"
+})
 
 
 // Rest of Your Application
