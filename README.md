@@ -21,14 +21,23 @@ npm install doppler-client --save
 
 The package needs to be configured with your account's api key which is available in your [Doppler account](https://doppler.com/workplace/api_key), pipeline identifier and the environment name:
 
+
 ### Environment Variables Required
-Please add these environment variables to your `.env` file or infra provider.
+Please add these environment variables to your `.env` file in the root directory or on your infra provider.
 
 ```
 DOPPLER_API_KEY = <API Key>
 DOPPLER_PIPELINE = <Pipeline ID>
 DOPPLER_ENVIRONMENT = <Environment Name>
 ```
+
+### Lookup Priority
+Doppler will look for these variables in 3 places with the following priority:
+
+1. Passed in as initialization arguments
+2. Read from environment variables
+3. Read from `.env` file
+
 
 ### One Line Install
 This installation method will expect the `DOPPLER_API_KEY`, `DOPPLER_PIPELINE`, `DOPPLER_ENVIRONMENT` as environment variables.
@@ -55,6 +64,7 @@ require("doppler-client")({
 // Rest of Your Application
 const example_variable = process.env.EXAMPLE_VARIABLE
 ```
+
 
 ## Key Best Practices
 

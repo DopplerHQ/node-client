@@ -155,10 +155,14 @@ class Doppler {
 
 var sharedInstance = null;
 module.exports = function(data = {}) {
-  data.api_key = data.api_key || process.env.DOPPLER_API_KEY || null
-  data.pipeline = data.pipeline || process.env.DOPPLER_PIPELINE || null
-  data.environment = data.environment || process.env.DOPPLER_ENVIRONMENT || null
-  
   if(sharedInstance != null) { return sharedInstance }
+  
+  const env_path = process.cwd() + "/.env"
+  const env = fs.existsSync(env_path) ? dotenv.parse(fs.readFileSync(env_path)) : {}
+
+  data.api_key = data.api_key || process.env.DOPPLER_API_KEY || env.DOPPLER_API_KEY || null
+  data.pipeline = data.pipeline || process.env.DOPPLER_PIPELINE || env.DOPPLER_PIPELINE || null
+  data.environment = data.environment || process.env.DOPPLER_ENVIRONMENT || env.DOPPLER_ENVIRONMENT || null
+    
   return sharedInstance = new Doppler(data)
 }
