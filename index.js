@@ -1,4 +1,5 @@
-const requestSync = require("sync-request")
+const needle = require("needle")
+const requestGet = require("deasync")(needle.get)
 const fs = require("fs")
 const path = require("path")
 const dotenv = require("dotenv")
@@ -44,7 +45,6 @@ class Doppler {
     const _this = this
 
     const response = _this.request({
-      method: "GET",
       query: {
         environment: _this.environment,
         pipeline: _this.pipeline
@@ -134,18 +134,27 @@ class Doppler {
 
   request(data) {
     try {
-      const res = requestSync(data.method, (this.host + data.path), {
-        json: data.body,
-        qs: data.query,
+      var url_params = []
+
+      for (var name in data.query) {
+        if (!data.query.hasOwnProperty(name)) {
+          continue
+        }
+
+        url_params.push(name + "=" + data.query[name])
+      }
+
+      const url = this.host + data.path + "?" + url_params.join("&")
+      const res = requestGet(url, {
         headers: this.request_headers,
-        timeout: 1500
+        json: true,
+        response_timeout: 1500
       })
 
       return [
         (res.statusCode === 200),
-        JSON.parse(res.body.toString("utf8"))
+        res.body
       ]
-
     } catch (error) {
       return [false, null]
     }

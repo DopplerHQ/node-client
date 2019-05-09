@@ -1,6 +1,6 @@
 {
   "name": "doppler-client",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "The official Doppler Node.js client.",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,8 @@
   },
   "homepage": "https://doppler.com",
   "dependencies": {
+    "deasync": "^0.1.15",
     "dotenv": "6.1.0",
-    "sync-request": "6.0.0"
+    "needle": "^2.3.1"
   }
 }
