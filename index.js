@@ -118,6 +118,10 @@ class Doppler {
   get(key_name) {
     return this.remote_keys[key_name]
   }
+  
+  get_all() {
+    return this.remote_keys
+  }
 
   override_keys() {
     var override_keys = Object.keys(this.remote_keys)
