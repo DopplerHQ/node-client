@@ -4,6 +4,7 @@ process.env.DOPPLER_PIPELINE = "31"
 process.env.DOPPLER_ENVIRONMENT = "development_node"
 */
 
-require("./index")()
+const doppler = require("./index")()
 
+console.log(doppler.get("TESTER"))
 console.log(process.env.TESTER)

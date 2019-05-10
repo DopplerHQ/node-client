@@ -27,6 +27,7 @@ class Doppler {
     this.host = process.env.DOPPLER_HOST || "https://deploy.doppler.com"
     this.ignore_variables = new Set(data.ignore_variables || [])
     this.max_retries = 10
+    this.override = data.hasOwnProperty("override") ? data.override : true
     this.request_headers = {
       "api-key": data.api_key,
       "client-version": data.client_version || config.version,
@@ -57,8 +58,12 @@ class Doppler {
 
     if (success) {
       _this.remote_keys = body.variables
-      _this.override_keys()
       _this.write_env()
+      
+      if(_this.override) {
+        _this.override_keys()
+      }
+  
       return
     }
 
@@ -110,8 +115,6 @@ class Doppler {
 
 
   // Public Methods
-
-  // Override: Custom ignore method  
   get(key_name) {
     return this.remote_keys[key_name]
   }
