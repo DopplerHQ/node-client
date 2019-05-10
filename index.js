@@ -98,7 +98,7 @@ class Doppler {
       }
 
       const value = this.remote_keys[key]
-      remote_body.push(key + " = " + value)
+      remote_body.push(key + "=\"" + value + "\"")
     }
 
     fs.writeFile(this.backup_filepath, remote_body.join("\n"), function(error) {
