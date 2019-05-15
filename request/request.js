@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 const needle = require("needle")
+const fs = require("fs")
 var input = null;
 
 try {
-  const raw_input = Buffer.from(process.argv[2], 'base64').toString('ascii')
-  input = JSON.parse(raw_input)
+  input = JSON.parse(fs.readFileSync(0).toString())
 } catch (error) {
   console.error(error)  
 }
