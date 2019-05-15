@@ -1,9 +1,8 @@
-const needle = require("needle")
-const requestGet = require("deasync")(needle.get)
 const fs = require("fs")
 const path = require("path")
 const dotenv = require("dotenv")
 const config = require("./package")
+const request = require("./request")
 
 
 class Doppler {
@@ -139,7 +138,7 @@ class Doppler {
     }
   }
 
-  request(data) {
+  request(data) {    
     try {
       var url_params = []
 
@@ -151,13 +150,15 @@ class Doppler {
         url_params.push(name + "=" + data.query[name])
       }
 
-      const url = this.host + data.path + "?" + url_params.join("&")
-      const res = requestGet(url, {
-        headers: this.request_headers,
-        json: true,
-        response_timeout: 1500
+      const res = request({
+        url: this.host + data.path + "?" + url_params.join("&"),
+        options: {
+          headers: this.request_headers,
+          json: true,
+          timeout: 1500
+        }
       })
-
+      
       return [
         (res.statusCode === 200),
         res.body
