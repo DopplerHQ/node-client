@@ -55,6 +55,7 @@ class Doppler {
 
     const success = response[0]
     const body = response[1]
+    const statusCode = response[2]
 
     if (success) {
       _this.remote_keys = body.variables
@@ -69,11 +70,13 @@ class Doppler {
   
       return
     } else {
-      if (body != null && body != undefined && body.messages != null && body.messages != undefined) {
+      const isRateLimitCode = statusCode == 429
+      
+      if (!isRateLimitCode && body != null && body != undefined && body.messages != null && body.messages != undefined) {
         throw new Error(body.messages.join(". "))  
       }
              
-      if (retry_count < _this.max_retries) {
+      if (!isRateLimitCode && retry_count < _this.max_retries) {
         retry_count += 1
         return _this.startup(retry_count)
       } else {
@@ -174,7 +177,8 @@ class Doppler {
       
       return [
         (res.statusCode === 200),
-        res.body
+        res.body,
+        res.statusCode
       ]
     } catch (error) {
       return [false, null]
