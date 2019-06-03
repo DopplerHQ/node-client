@@ -82,7 +82,7 @@ class Doppler {
           }
         }
 
-        console.error("DOPPLER: Failed to reach Doppler servers after " + retry_count + " retries...")
+        throw new Error("DOPPLER: Failed to reach Doppler servers after " + retry_count + " retries...")
       }
     }
 
@@ -173,9 +173,7 @@ class Doppler {
       return
     }
 
-    response.messages.forEach(function(error) {
-      console.error(error)
-    })
+    throw new Error(response.messages.join(". "))
   }
 
 }
