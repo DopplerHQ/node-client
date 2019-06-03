@@ -1,4 +1,5 @@
 const fs = require("fs")
+const os = require("os")
 const path = require("path")
 const dotenv = require("dotenv")
 const config = require("./package")
@@ -57,16 +58,21 @@ class Doppler {
 
     if (success) {
       _this.remote_keys = body.variables
-      _this.write_env()
+      
+      if (this.backup_filepath) {
+        _this.write_env()
+      }
       
       if(_this.override) {
         _this.override_keys()
       }
   
       return
-    }
-
-    if (!body || !body.messages) {
+    } else {
+      if (body != null && body != undefined && body.messages != null && body.messages != undefined) {
+        throw new Error(body.messages.join(". "))  
+      }
+             
       if (retry_count < _this.max_retries) {
         retry_count += 1
         return _this.startup(retry_count)
@@ -85,15 +91,10 @@ class Doppler {
         throw new Error("DOPPLER: Failed to reach Doppler servers after " + retry_count + " retries...")
       }
     }
-
-    _this.error_handler(body)
   }
 
   write_env() {
-    if (!this.backup_filepath) {
-      return
-    }
-
+    const backup_filepath = this.backup_filepath
     var remote_body = []
 
     for (var key in this.remote_keys) {
@@ -104,11 +105,23 @@ class Doppler {
       const value = this.remote_keys[key]
       remote_body.push(key + "=\"" + value + "\"")
     }
-
-    fs.writeFile(this.backup_filepath, remote_body.join("\n"), function(error) {
-      if (error !== null) {
-        console.error("Failed to write backup to disk with path " + this.backup_filepath)
+    
+    fs.mkdtemp(path.join(os.tmpdir(), 'doppler-'), function(error, tmpFolder) { 
+      if(error) {
+        return console.error("Failed to write backup to disk with path " + backup_filepath)
       }
+      
+      fs.writeFile(tmpFolder + "/doppler.env", remote_body.join("\n"), function(error) {
+        if(error) {
+          return console.error("Failed to write backup to disk with path " + backup_filepath)
+        }
+        
+        fs.rename(tmpFolder + "/doppler.env", backup_filepath, function(error) {
+          if(error) {
+            return console.error("Failed to write backup to disk with path " + backup_filepath)
+          }
+        })
+      })
     })
   }
 
@@ -166,14 +179,6 @@ class Doppler {
     } catch (error) {
       return [false, null]
     }
-  }
-
-  error_handler(response) {
-    if (!response || !response.messages) {
-      return
-    }
-
-    throw new Error(response.messages.join(". "))
   }
 
 }
