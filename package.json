@@ -1,10 +1,10 @@
 {
-  "name": "doppler-client",
-  "version": "2.0.14",
+  "name": "@dopplerhq/client",
+  "version": "2.0.15",
   "description": "The official Doppler Node.js client.",
   "main": "index.js",
   "scripts": {
-    "test": "jest tests"
+    "test": "jest tests/test.js"
   },
   "repository": {
     "type": "git",
@@ -15,13 +15,14 @@
     "environment",
     "configuration management"
   ],
-  "author": "Brian Vallelunga <brian@doppler.com>",
+  "author": "Doppler <support@doppler.com>",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/DopplerHQ/node-client/issues"
   },
   "homepage": "https://doppler.com",
   "dependencies": {
+    "cross-spawn": "^6.0.5",
     "dotenv": "6.1.0",
     "needle": "^2.4.0"
   },

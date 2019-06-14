@@ -1,7 +1,7 @@
-var child_process = require('child_process')
+const spawn = require('cross-spawn')
 
 module.exports = function(data) {
-  const response = child_process.spawnSync(__dirname + "/request.js", [], { 
+  const response = spawn.sync("node", [__dirname + "/request.js"], { 
     encoding: 'ascii',
     input: JSON.stringify(data)
   })

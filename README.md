@@ -14,7 +14,7 @@ applications written for **only** server-side JavaScript.
 Install the package with:
 
 ``` bash
-npm install doppler-client --save
+npm install @dopplerhq/client --save
 ```
 
 ## Usage
