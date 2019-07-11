@@ -114,12 +114,12 @@ class Doppler {
         return console.error("Failed to write backup to disk with path " + backup_filepath)
       }
       
-      fs.writeFile(tmpFolder + "/doppler.env", remote_body.join("\n"), function(error) {
+      fs.writeFile(path.join(tmpFolder, "doppler.env"), remote_body.join("\n"), function(error) {
         if(error) {
           return console.error("Failed to write backup to disk with path " + backup_filepath)
         }
         
-        fs.rename(tmpFolder + "/doppler.env", backup_filepath, function(error) {
+        fs.rename(path.join(tmpFolder, "doppler.env"), backup_filepath, function(error) {
           if(error) {
             return console.error("Failed to write backup to disk with path " + backup_filepath)
           }

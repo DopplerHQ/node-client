@@ -1,7 +1,8 @@
+const path = require('path')
 const spawn = require('cross-spawn')
 
 module.exports = function(data) {
-  const response = spawn.sync("node", [__dirname + "/request.js"], { 
+  const response = spawn.sync("node", [path.join(__dirname, "request.js")], { 
     encoding: 'ascii',
     input: JSON.stringify(data)
   })
