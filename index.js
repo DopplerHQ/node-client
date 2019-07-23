@@ -59,23 +59,23 @@ class Doppler {
 
     if (success) {
       _this.remote_keys = body.variables
-      
+
       if (this.backup_filepath) {
         _this.write_env()
       }
-      
+
       if(_this.override) {
         _this.override_keys()
       }
-  
+
       return
     } else {
       const isRateLimitCode = statusCode == 429
-      
+
       if (!isRateLimitCode && body != null && body != undefined && body.messages != null && body.messages != undefined) {
-        throw new Error(body.messages.join(". "))  
+        throw new Error(body.messages.join(". "))
       }
-             
+
       if (!isRateLimitCode && retry_count < _this.max_retries) {
         retry_count += 1
         return _this.startup(retry_count)
@@ -106,19 +106,19 @@ class Doppler {
       }
 
       const value = this.remote_keys[key]
-      remote_body.push(key + "=\"" + value + "\"")
+      remote_body.push(key + "=\"" + value.replace(/\\/g, '\\\\').replace(/\"/g, '\\"') + "\"")
     }
-    
-    fs.mkdtemp(path.join(os.tmpdir(), 'doppler-'), function(error, tmpFolder) { 
+
+    fs.mkdtemp(path.join(os.tmpdir(), 'doppler-'), function(error, tmpFolder) {
       if(error) {
         return console.error("Failed to write backup to disk with path " + backup_filepath)
       }
-      
+
       fs.writeFile(path.join(tmpFolder, "doppler.env"), remote_body.join("\n"), function(error) {
         if(error) {
           return console.error("Failed to write backup to disk with path " + backup_filepath)
         }
-        
+
         fs.rename(path.join(tmpFolder, "doppler.env"), backup_filepath, function(error) {
           if(error) {
             return console.error("Failed to write backup to disk with path " + backup_filepath)
@@ -133,7 +133,7 @@ class Doppler {
   get(key_name) {
     return this.remote_keys[key_name]
   }
-  
+
   get_all() {
     return this.remote_keys
   }
@@ -154,7 +154,7 @@ class Doppler {
     }
   }
 
-  request(data) {    
+  request(data) {
     try {
       var url_params = []
 
@@ -174,7 +174,7 @@ class Doppler {
           timeout: 1500
         }
       })
-      
+
       return [
         (res.statusCode === 200),
         res.body,
