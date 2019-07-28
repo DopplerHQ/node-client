@@ -1,5 +1,4 @@
 const fs = require("fs")
-const os = require("os")
 const path = require("path")
 const dotenv = require("dotenv")
 const config = require("./package")
@@ -98,6 +97,7 @@ class Doppler {
 
   write_env() {
     const backup_filepath = this.backup_filepath
+    const tmp_filepath = `${backup_filepath}.tmp`
     var remote_body = []
 
     for (var key in this.remote_keys) {
@@ -109,21 +109,15 @@ class Doppler {
       remote_body.push(key + "=\"" + value.replace(/\\/g, '\\\\').replace(/\"/g, '\\"') + "\"")
     }
 
-    fs.mkdtemp(path.join(os.tmpdir(), 'doppler-'), function(error, tmpFolder) {
+    fs.writeFile(tmp_filepath, remote_body.join("\n"), function(error) {
       if(error) {
         return console.error("Failed to write backup to disk with path " + backup_filepath)
       }
 
-      fs.writeFile(path.join(tmpFolder, "doppler.env"), remote_body.join("\n"), function(error) {
+      fs.rename(tmp_filepath, backup_filepath, function(error) {
         if(error) {
           return console.error("Failed to write backup to disk with path " + backup_filepath)
         }
-
-        fs.rename(path.join(tmpFolder, "doppler.env"), backup_filepath, function(error) {
-          if(error) {
-            return console.error("Failed to write backup to disk with path " + backup_filepath)
-          }
-        })
       })
     })
   }
