@@ -85,14 +85,15 @@ class Doppler {
           const response = dotenv.parse(fs.readFileSync(_this.backup_filepath))
 
           if (response !== null) {
-            console.log("DOPPLER: Falling back to local backup at " + _this.backup_filepath)
+            console.log(`DOPPLER: Falling back to local backup at ${_this.backup_filepath}`)
             _this.remote_keys = response
             _this.override_keys()
             return
           }
         }
 
-        throw new Error("DOPPLER: Failed to reach Doppler servers after " + retry_count + " retries...")
+        console.error(`DOPPLER: Failed to reach Doppler servers after ${retry_count} retries.`)
+        process.exit(1)
       }
     }
   }
@@ -120,7 +121,7 @@ class Doppler {
     try {
       fs.writeFileSync(tmp_filepath, body)
       fs.renameSync(tmp_filepath, backup_filepath)
-    } catch (error) {
+    } catch (_) {
       console.error(`Failed to write fallback file to: ${backup_filepath}`)
       this.cleanup_env()
     }
