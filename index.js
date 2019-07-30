@@ -3,6 +3,7 @@ const path = require("path")
 const dotenv = require("dotenv")
 const config = require("./package")
 const request = require("./request")
+const exitHook = require('exit-hook')
 
 
 class Doppler {
@@ -38,6 +39,7 @@ class Doppler {
     }
 
     this.startup()
+    exitHook(this.cleanup_env.bind(this))
   }
 
   // Private Methods
@@ -97,7 +99,7 @@ class Doppler {
 
   write_env() {
     const backup_filepath = this.backup_filepath
-    const tmp_filepath = `${backup_filepath}.tmp`
+    const tmp_filepath = `${backup_filepath}.tmp.${process.pid}`
     var remote_body = []
 
     for (var key in this.remote_keys) {
@@ -109,19 +111,28 @@ class Doppler {
       remote_body.push(key + "=\"" + value.replace(/\\/g, '\\\\').replace(/\"/g, '\\"') + "\"")
     }
 
-    fs.writeFile(tmp_filepath, remote_body.join("\n"), function(error) {
-      if(error) {
-        return console.error("Failed to write backup to disk with path " + backup_filepath)
-      }
+    const body = remote_body.join("\n")
 
-      fs.rename(tmp_filepath, backup_filepath, function(error) {
-        if(error) {
-          return console.error("Failed to write backup to disk with path " + backup_filepath)
-        }
-      })
-    })
+    if(fs.existsSync(backup_filepath) && fs.readFileSync(backup_filepath).toString() === body) {
+      return
+    }
+
+    try {
+      fs.writeFileSync(tmp_filepath, body)
+      fs.renameSync(tmp_filepath, backup_filepath)
+    } catch (error) {
+      console.error(`Failed to write fallback file to: ${backup_filepath}`)
+      this.cleanup_env()
+    }
   }
 
+  cleanup_env() {
+    const tmp_filepath = `${this.backup_filepath}.tmp.${process.pid}`
+    console.log(tmp_filepath, fs.existsSync(tmp_filepath))
+    if(fs.existsSync(tmp_filepath)) {
+      fs.unlinkSync(tmp_filepath)
+    }
+  }
 
   // Public Methods
   get(key_name) {
