@@ -128,7 +128,7 @@ class Doppler {
 
   cleanup_env() {
     const tmp_filepath = `${this.backup_filepath}.tmp.${process.pid}`
-    console.log(tmp_filepath, fs.existsSync(tmp_filepath))
+
     if(fs.existsSync(tmp_filepath)) {
       fs.unlinkSync(tmp_filepath)
     }
