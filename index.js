@@ -38,6 +38,9 @@ class Doppler {
       this.backup_filepath = path.resolve(process.cwd(), data.backup_filepath)
     }
 
+    // Upgrade Banner
+    console.error("DEPRECATED: Please use the new CLI at https://docs.doppler.com/docs/enclave-installation\n\n")
+
     this.startup()
     exitHook(this.cleanup_env.bind(this))
   }
