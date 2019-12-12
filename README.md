@@ -1,3 +1,8 @@
+# DEPRECATED
+The new Doppler CLI is exceptionally light and fast, and is provided as a binary to support environments without `node`.
+Migrate today by visiting our [installation documentation](https://docs.doppler.com/docs/enclave-installation).
+
+
 # Doppler Node.js Library
 
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/DopplerHQ/node-client)
@@ -83,7 +88,7 @@ const example_variable = process.env.EXAMPLE_VARIABLE
 
 So if Doppler stores my environment variables, where should I keep my Doppler API keys?
 
-That is a great question! We recommend storing your `DOPPLER_API_KEY`, `DOPPLER_PIPELINE`, and `DOPPLER_ENVIRONMENT` 
+That is a great question! We recommend storing your `DOPPLER_API_KEY`, `DOPPLER_PIPELINE`, and `DOPPLER_ENVIRONMENT`
 in a `.env` file or with your infra provider. That means the only variables you should be storing in your local environment are the Doppler keys. All other variables should be be fetched by the Doppler client.
 
 
